@@ -20,6 +20,12 @@
 
 **Content Rendering Module**: The Module that owns how Markdown and optional MDX content appear across Writing and Project detail pages.
 
+**Mermaid Renderer Module**: The Module inside the Content Rendering Module that owns Mermaid diagram detection, conditional loading, source hiding, fallback, layout reservation, render lifecycle state, and future animation hooks.
+
 **Site Identity Module**: The Module that owns site name, hero copy, profile copy, navigation labels, social links, and tag display names.
 
 **Content Operations Module**: The Module made of documentation, schema, and future validation scripts that explains and checks how content is added and maintained.
+
+**Deployment Module**: The Module that owns GitHub Pages deployment assumptions, including repository name, Astro `site`, Astro `base`, canonical URLs, asset paths, and deploy workflow checks.
+
+**Content Fixture**: Test or sample content used to verify schema, Content Graph behavior, rendering behavior, and authoring rules without depending on real portfolio content.

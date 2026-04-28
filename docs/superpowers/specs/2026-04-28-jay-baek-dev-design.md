@@ -275,6 +275,44 @@ Pages should assemble data and UI. They should not own content rules.
 
 Future features should not be pre-abstracted before they exist. One adapter is a hypothetical seam. Two adapters make a seam real.
 
+## Deepening Plan
+
+The v1 implementation should resolve the main architecture risks in priority order. These are implementation-order constraints, not optional polish.
+
+| Priority | Module | Effort | Depends On | Reason |
+| --- | --- | --- | --- | --- |
+| P0 | Content Graph Module | human ~1 day / CC ~30-45 min | none | This is the central content seam for Home, Projects, Writing, Tags, and Series. If it is shallow, every page will learn content rules. |
+| P1 | Content Operations Module | human ~0.5 day / CC ~20-30 min | Content Graph Module | Schema, fixtures, tests, and authoring guidance must match the Content Graph Interface. |
+| P1 | Deployment Module | human ~0.5 day / CC ~15-25 min | Site Identity Module | GitHub Pages `site`, `base`, canonical URLs, assets, and workflow checks must agree. |
+| P1 | Mermaid Renderer Module | human ~1 day / CC ~30-45 min | Content detail route scaffold | Mermaid detection, hiding, fallback, reserved layout, and animation hooks must not leak into pages. |
+| P2 | Site Identity Module | human ~0.5 day / CC ~15-20 min | none | Copy, profile data, social links, and future language policy should stay local, but this is less likely to break all routes. |
+
+Dependency shape:
+
+```text
+Content Operations
+  └── supports schema, fixtures, and tests for
+      Content Graph Module
+          └── feeds
+              Home / Projects / Writing / Tags / Series
+
+Site Identity Module
+  ├── feeds Home / About / SEO
+  └── feeds Deployment Module
+
+Content Rendering Module
+  └── contains Mermaid Renderer Module
+      └── used by Project Detail and Writing Detail
+```
+
+Recommended implementation milestones:
+
+1. Foundation: create Astro, TypeScript, Site Identity, GitHub Pages config, Content Collections, Content Graph Interface, and Content Operations guide/fixtures.
+2. Graph verification: add Vitest coverage for Content Graph behavior before wiring every route.
+3. Rendering: add ContentLayout, Markdown typography, and the Mermaid Renderer Module.
+4. Routes and UI: assemble Home, Projects, Writing, Tags, Series, and About using existing Modules.
+5. Verification: run `npm run test`, `npm run astro check`, `npm run build`, and deployed GitHub Pages smoke checks.
+
 ### Content Graph Module
 
 Files:
@@ -296,6 +334,14 @@ Astro collection schemas should use `reference()` for relationships between Writ
 The Content Graph should be built once per static build and reused by page-level queries. It should centralize collection reads, filtering, sorting, tag indexes, series indexes, and related-content lookup instead of recomputing those structures in every route.
 
 Testing must avoid shared graph state leaking between test cases. The implementation should provide a testable graph construction path, such as a pure graph factory that accepts fixture entries or an explicit reset hook used only by tests. Tests should assert behavior through the public graph Interface while controlling fixture input.
+
+Implementation depth rules:
+
+- Prefer one public `graph.ts` Interface over many page-facing helper exports.
+- Keep collection loading, normalization, indexing, and relationship composition inside the Implementation.
+- Expose stable page-level query results, not raw Astro collection entries when a page needs derived fields.
+- Do not add search, CMS, or i18n adapters in v1. Add those only when a real second adapter exists.
+- If graph state is memoized for a static build, tests must be able to construct isolated graph instances from fixtures.
 
 Its Interface should answer page-level questions:
 
@@ -344,6 +390,8 @@ Its Implementation should hide:
 
 Writing detail and Project detail should use the same rendering rules.
 
+The Mermaid Renderer Module lives inside the Content Rendering Module. It is deep enough to own diagram detection, conditional loading, source hiding, fallback, layout reservation, render lifecycle state, and future animation hooks.
+
 Mermaid strategy for v1:
 
 - The default Mermaid path is client-side rendering for Markdown code blocks, owned by the Content Rendering Module.
@@ -368,6 +416,12 @@ The Site Identity Module owns the site's name, copy, navigation, profile links, 
 
 v1 should not implement full multilingual routing, but Korean and English hiring-facing copy should live in this Module instead of being scattered through pages.
 
+Implementation depth rules:
+
+- Home, About, SEO metadata, and navigation should read identity/copy data from this Module instead of defining strings inline.
+- Do not introduce a full i18n Adapter in v1.
+- Store Korean primary copy and English supporting copy in a structure that can later be migrated to locale-aware routing without searching through page files.
+
 ### Content Operations Module
 
 Files:
@@ -391,6 +445,30 @@ It should explain:
 - How to choose between inline Mermaid and source-controlled diagram assets.
 
 At v1, Astro content schemas and build checks are enough. A validation script should only be added when schema checks no longer cover common mistakes.
+
+Implementation depth rules:
+
+- The content guide must describe the same required fields and status semantics enforced by `src/content.config.ts`.
+- Test fixtures should exercise the same authoring rules documented in the guide.
+- If a rule can be encoded in Astro schema, encode it there instead of leaving it as prose only.
+- If a rule cannot be encoded in schema, document it clearly and cover it through Content Graph tests where possible.
+
+### Deployment Module
+
+Files:
+
+- `astro.config.mjs`
+- `.github/workflows/deploy.yml`
+- `src/config/site.ts`
+
+The Deployment Module owns GitHub Pages deployment assumptions: final repository name, `site`, `base`, canonical URL behavior, asset path behavior, and the deploy workflow.
+
+Implementation depth rules:
+
+- `astro.config.mjs` should derive or centralize `site` and `base` decisions instead of duplicating URL strings across files.
+- The GitHub Actions workflow should build the site through the same scripts used locally.
+- The deployed smoke checklist is part of the Module's verification surface.
+- Custom domains remain out of scope for v1. If a custom domain is added later, update this Module and the smoke checklist together.
 
 ### External Capability Modules
 
