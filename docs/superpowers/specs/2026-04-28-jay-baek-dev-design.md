@@ -284,6 +284,7 @@ The v1 implementation should resolve the main architecture risks in priority ord
 | P0 | Content Graph Module | human ~1 day / CC ~30-45 min | none | This is the central content seam for Home, Projects, Writing, Tags, and Series. If it is shallow, every page will learn content rules. |
 | P1 | Content Operations Module | human ~0.5 day / CC ~20-30 min | Content Graph Module | Schema, fixtures, tests, and authoring guidance must match the Content Graph Interface. |
 | P1 | Deployment Module | human ~0.5 day / CC ~15-25 min | Site Identity Module | GitHub Pages `site`, `base`, canonical URLs, assets, and workflow checks must agree. |
+| P1 | Content Rendering Module | human ~0.5 day / CC ~20-30 min | Content detail route scaffold | Writing and Project detail pages need one reading layout and rich-content seam. |
 | P1 | Mermaid Renderer Module | human ~1 day / CC ~30-45 min | Content detail route scaffold | Mermaid detection, hiding, fallback, reserved layout, and animation hooks must not leak into pages. |
 | P2 | Site Identity Module | human ~0.5 day / CC ~15-20 min | none | Copy, profile data, social links, and future language policy should stay local, but this is less likely to break all routes. |
 
@@ -312,6 +313,50 @@ Recommended implementation milestones:
 3. Rendering: add ContentLayout, Markdown typography, and the Mermaid Renderer Module.
 4. Routes and UI: assemble Home, Projects, Writing, Tags, Series, and About using existing Modules.
 5. Verification: run `npm run test`, `npm run astro check`, `npm run build`, and deployed GitHub Pages smoke checks.
+
+Deepening opportunity records:
+
+1. Content Graph Module
+   - Problem: content filtering, sorting, tag indexing, series indexing, and related-content composition can spread across route files.
+   - Solution: expose one page-facing Interface from `src/lib/content/graph.ts` and keep collection loading plus derived indexes inside the Implementation.
+   - Leverage: Home, Projects, Writing, Tags, Series, tests, and future search/CMS work all use the same content rules.
+   - Locality: bugs in draft filtering, ordering, or relationship composition are fixed in one Module.
+   - Tests: Vitest should exercise the public graph Interface with isolated Content Fixtures.
+
+2. Content Operations Module
+   - Problem: authoring rules can drift between prose docs, schema validation, fixtures, and tests.
+   - Solution: keep `docs/content-guide.md`, `src/content.config.ts`, tag config, and fixtures aligned as one operating surface.
+   - Leverage: humans and coding agents can add Projects, Writing, Series, Tags, and Featured Content without learning route internals.
+   - Locality: content mistakes are corrected in schema, guide, or fixture rules instead of scattered page fixes.
+   - Tests: schema checks and Content Graph tests should cover rules that can be made executable.
+
+3. Deployment Module
+   - Problem: GitHub Pages `site`, `base`, canonical URLs, asset paths, and workflow assumptions can diverge across config and CI.
+   - Solution: centralize deployment assumptions in `astro.config.mjs`, `src/config/site.ts`, and `.github/workflows/deploy.yml`.
+   - Leverage: local build, GitHub Actions, canonical metadata, links, CSS, and image paths share one deployment model.
+   - Locality: repository rename or future custom domain changes are handled in one Module and one smoke checklist.
+   - Tests: local build plus deployed GitHub Pages smoke checks verify navigation, assets, canonical URLs, and console 404s.
+
+4. Content Rendering Module
+   - Problem: Markdown/MDX typography, code, images, links, callouts, and detail-page metadata can diverge between Writing and Project pages.
+   - Solution: use one Content Rendering Module for Project Detail and Writing Detail, with Mermaid rendering delegated to an internal Module.
+   - Leverage: every long-form content page gets the same reading behavior and rich-content affordances.
+   - Locality: rendering changes are made in `ContentLayout.astro` and `src/components/content/**`, not in every route.
+   - Tests: rendering QA should verify Markdown, code, images, Mermaid presence, Mermaid absence, and fallback states.
+
+5. Mermaid Renderer Module
+   - Problem: diagram detection, conditional loading, raw-syntax hiding, fallback, reserved layout, and animation can leak into layouts or pages.
+   - Solution: keep Mermaid lifecycle behavior inside a dedicated Module within the Content Rendering Module.
+   - Leverage: every diagram page gets consistent behavior, and future motion decisions reuse the same render lifecycle hook.
+   - Locality: Mermaid failures, no-JS fallback, and animation changes stay in one Implementation.
+   - Tests: browser QA should cover diagram render, no raw syntax flash, no-JS/failure fallback, and no Mermaid runtime on pages without diagrams.
+
+6. Site Identity Module
+   - Problem: Korean primary copy, English supporting copy, navigation, profile data, social links, and SEO metadata can become inline strings across pages.
+   - Solution: keep identity and hiring-facing copy in one Module without introducing a full i18n Adapter in v1.
+   - Leverage: Home, About, navigation, SEO, and future locale-aware routing share one source of truth.
+   - Locality: copy or profile changes happen in `src/config/**`, not across route and layout files.
+   - Tests: build checks should verify required identity fields exist; visual/browser QA should verify Home/About consume them.
 
 ### Content Graph Module
 
