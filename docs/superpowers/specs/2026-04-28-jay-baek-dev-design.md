@@ -48,6 +48,125 @@ The visual tone should combine a modern AI product builder feel with a calm engi
 
 The home page should use Korean primary copy with English supporting copy. Hero copy is expected to evolve as the content library grows.
 
+### Visual Direction
+
+The visual system should be an editorial engineering workbench.
+
+This means:
+
+- typography and information hierarchy carry the design.
+- surfaces feel precise, calm, and maintained.
+- Projects and Writing look like evidence, not marketing claims.
+- WIP work is framed through status, notes, and technical decisions.
+- decorative elements are used sparingly and only when they improve hierarchy.
+
+Avoid:
+
+- purple, violet, indigo, or blue-to-purple AI gradients.
+- generic SaaS card grids.
+- icon-in-colored-circle feature sections.
+- centered-everything hero layouts.
+- decorative blobs, floating circles, or wavy dividers.
+- bubbly high-radius UI everywhere.
+- "Welcome to..." or "Unlock the power of..." style copy.
+- cards inside cards.
+
+Design tokens should be named before implementation:
+
+```text
+Token group     | Direction
+----------------|--------------------------------------------------
+Background      | warm white or very light neutral, not beige-heavy
+Text            | near-black neutral with clear secondary text scale
+Accent          | one restrained accent for links, focus, and status
+Border          | quiet neutral lines for structure, not decoration
+Status colors   | muted, semantic, readable on light backgrounds
+Radius          | small, consistent radius, 8px max unless necessary
+Spacing         | 4px base rhythm with generous reading whitespace
+Typography      | one serious text face plus one technical/mono face
+```
+
+Typography should avoid default font stacks as the primary design choice. Pick real typefaces during implementation, with strong Korean and Latin rendering. Body text must be at least 16px with accessible contrast.
+
+Cards are allowed for individual repeated items such as Project and Writing entries. Cards should not be used as section wrappers, hero containers, or decorative layout blocks.
+
+### Minimum Design System
+
+The implementation should define CSS variables before building page-specific UI.
+
+Required token groups:
+
+- `--color-bg`
+- `--color-surface`
+- `--color-text`
+- `--color-text-muted`
+- `--color-link`
+- `--color-link-visited`
+- `--color-border`
+- `--color-focus`
+- `--color-status-exploring`
+- `--color-status-building`
+- `--color-status-maintained`
+- `--color-status-paused`
+- `--space-*`
+- `--radius-sm`
+- `--font-body`
+- `--font-display`
+- `--font-mono`
+
+Required UI rules:
+
+- Links must be visually identifiable without hover.
+- Visited links must have a distinct color.
+- Focus states must be visible and use `--color-focus`.
+- Buttons are only for commands. Navigation and content links should look like links.
+- Status badges use muted semantic colors and text labels, never color alone.
+- Project and Writing cards use small radius, quiet border, and no decorative icon circles.
+- Reading layouts should use a constrained text width around 68-76 characters.
+- Code blocks and Mermaid diagrams should be visually part of the article, not floating decorative panels.
+- Section headings should sit closer to the content they introduce than to the previous section.
+- Body copy should be 16px minimum, with line height comfortable for Korean and English mixed text.
+
+Design system score target for v1: consistent and credible, not heavily branded. The site should feel intentionally designed even if the visual system remains restrained.
+
+### Typography And Palette Direction
+
+Final font and palette choices should be approved through `design-shotgun` once the design tool is configured. Until then, implementation should follow this provisional direction so v1 does not fall back to a generic default theme.
+
+Provisional typography direction:
+
+- Body: a Korean-first sans with excellent mixed Korean/English readability, such as Pretendard or an equivalent high-quality Korean UI/text face.
+- Display: the same family with stronger weight, or a compatible editorial sans. Avoid decorative display faces.
+- Mono: a serious technical mono face such as JetBrains Mono, IBM Plex Mono, or an equivalent, used only for code, metadata, and technical labels.
+- Do not use `system-ui`, Inter, Roboto, Arial, or browser defaults as the primary design choice.
+- Mixed Korean/English lines should be tested in hero copy, card summaries, metadata, and article body text.
+
+Provisional palette direction:
+
+```text
+Role              | Direction
+------------------|---------------------------------------------------------
+Background        | off-white neutral, not yellow beige or cold gray
+Surface           | nearly white with subtle border, not elevated shadow cards
+Primary text      | near-black neutral
+Muted text        | cool gray with WCAG AA contrast for body-size text
+Link/accent       | restrained blue-green or ink-blue, not purple/indigo
+Visited link      | visibly distinct but still restrained
+Focus             | high-contrast outline color, visible on all surfaces
+Exploring status  | muted slate or blue-gray
+Building status   | muted blue-green
+Maintained status | muted green
+Paused status     | muted amber or gray
+```
+
+Design-shotgun should explore at least three distinct font/palette directions before final implementation:
+
+1. Editorial engineering workbench: Korean-first sans, ink text, quiet blue-green accent.
+2. Technical notebook: stronger mono presence, tighter metadata, high reading clarity.
+3. Premium builder portfolio: slightly more polished contrast and spacing, still no generic SaaS gradients.
+
+The approved direction should be recorded in the plan or `DESIGN.md` before implementation. If design-shotgun is unavailable, v1 may proceed with the provisional direction, but `/design-review` should run after implementation.
+
 ## Information Architecture
 
 Top-level navigation:
@@ -69,6 +188,42 @@ Home is the hiring-facing entry point. It should show:
 - Links to GitHub, LinkedIn, email, and other relevant profiles.
 
 Featured Projects and Featured Writing should have comparable visual weight.
+
+Home should use a brand-led workbench hierarchy, not a generic hero plus card grid.
+
+```text
+FIRST VIEWPORT
+┌─────────────────────────────────────────────────────────────┐
+│ Jay Baek.dev                           Home Projects Writing About
+│                                                             │
+│ 실전 문제를 AI 시스템으로 풀어내는 엔지니어                 │
+│ Building practical AI systems and documenting the engineering behind them.
+│                                                             │
+│ Junior AI Engineer @ Hyundai Capital                        │
+│ Focus: AI systems · engineering notes · public build logs    │
+│                                                             │
+│ [GitHub] [LinkedIn] [Email]                                  │
+│                                                             │
+│ Featured Projects                 Featured Writing           │
+│ ┌───────────────────────────┐     ┌────────────────────────┐ │
+│ │ status · problem · stack  │     │ title · tag · summary  │ │
+│ └───────────────────────────┘     └────────────────────────┘ │
+└─────────────────────────────────────────────────────────────┘
+```
+
+The first five seconds should answer:
+
+1. Who is this? Jay Baek, AI Engineer.
+2. What does he do? Builds practical AI systems.
+3. What proves it? Projects and Writing, shown with equal weight.
+
+Home should avoid:
+
+- decorative hero cards.
+- centered-everything portfolio templates.
+- generic "welcome" copy.
+- three-column feature grids.
+- project cards that imply WIP work is production-ready.
 
 ### Projects
 
@@ -532,6 +687,99 @@ Do not introduce adapter Interfaces for these capabilities until there are at le
 
 ## UI And UX Requirements
 
+### Responsive And Accessibility Requirements
+
+Responsive behavior should be intentional, not just stacked desktop content.
+
+```text
+VIEWPORT        | LAYOUT PRIORITY
+----------------|---------------------------------------------------------------
+Mobile 320-767  | identity, primary nav, one featured item per section, readable prose
+Tablet 768-1023 | two-column featured areas only when space supports comfortable text
+Desktop 1024+   | brand-led first viewport with Projects and Writing in balanced columns
+Wide 1440+      | constrain content width; do not stretch reading lines or cards endlessly
+```
+
+Mobile requirements:
+
+- Header must remain simple: brand visible, navigation reachable, no hidden critical links.
+- Touch targets must be at least 44px in height or width.
+- Home should show identity first, then one Featured Project and one Featured Writing before deeper lists.
+- Project and Writing cards should avoid cramped metadata rows; wrap metadata onto separate lines when needed.
+- Reading pages should keep text width comfortable and avoid horizontal scrolling except inside code blocks.
+- Code blocks should support horizontal scrolling without breaking page layout.
+- Mermaid diagrams should fit the viewport or provide safe overflow behavior.
+
+Accessibility requirements:
+
+- Use semantic landmarks: header, nav, main, footer.
+- Each page must have one clear `h1`.
+- Heading order must not skip levels for visual styling.
+- Links must be recognizable without color alone where possible.
+- Visited links must look different from unvisited links.
+- Body text contrast must be at least WCAG AA, 4.5:1.
+- Focus states must be visible for all interactive elements.
+- Status badges must include text labels, not color alone.
+- Images need meaningful alt text or empty alt text when decorative.
+- Mermaid diagrams need nearby text context or accessible labels.
+- Keyboard users must be able to reach navigation, content links, and external profile links.
+- No hover-only disclosure for important content.
+
+Accessibility should be validated with browser QA after implementation, including keyboard-only navigation through Home, Projects, Writing, and one detail page.
+
+### User Journey And Emotional Arc
+
+The site should move visitors through a Trust → Proof → Depth → Return arc.
+
+```text
+STEP | USER DOES                 | USER SHOULD FEEL              | DESIGN SUPPORT
+-----|---------------------------|-------------------------------|--------------------------------------------
+1    | Lands on Home             | "I know who this is."         | Jay Baek.dev, role, focus, clear navigation
+2    | Scans first viewport      | "This feels credible."        | restrained tone, no hype, Projects/Writing proof
+3    | Opens a Project           | "He can frame real problems." | Problem, Approach, Current Status, Technical Notes
+4    | Opens related Writing     | "He explains his thinking."   | readable article layout, tags, related Projects
+5    | Reads About               | "I understand his direction." | current role, goals, stack, contact links
+6    | Returns later             | "There is a trail to follow." | latest Writing, build logs, series, updated dates
+```
+
+Time-horizon goals:
+
+- First 5 seconds: clear identity and credible positioning.
+- First 5 minutes: enough Project and Writing evidence to judge technical taste.
+- Long-term: a maintained public record of learning, building, and technical judgment.
+
+Each major page should support one stage of this arc:
+
+- Home builds Trust.
+- Projects provide Proof.
+- Writing provides Depth.
+- About explains Direction.
+- Tags and Series support Return.
+
+### Interaction States
+
+Every user-facing content surface should define what the visitor sees when content is loading, empty, unavailable, successful, or partial. Empty states should feel like a warm public workbench, not a broken database query.
+
+```text
+FEATURE              | LOADING                  | EMPTY                                      | ERROR                         | SUCCESS                         | PARTIAL
+---------------------|--------------------------|--------------------------------------------|-------------------------------|----------------------------------|-------------------------------
+Home featured areas  | Stable skeleton blocks   | "정리 중인 작업이 곧 추가됩니다" + links   | Hide broken item, keep page   | Featured Projects/Writing shown | Show whichever side has content
+Projects list        | Static build placeholder | Current build focus + GitHub/About links   | Build should fail on bad data | Project cards with status       | WIP projects show honest status
+Writing list         | Static build placeholder | Writing queue note + About/GitHub links    | Build should fail on bad data | Featured + latest writing       | Drafts hidden, published shown
+Project detail       | Static generated page    | Not applicable for generated routes        | 404 with route back to list   | Problem/Approach/Status/Notes   | Missing links omitted cleanly
+Writing detail       | Static generated page    | Not applicable for generated routes        | 404 with route back to list   | Metadata + readable article     | Missing related items omitted
+Mermaid diagram      | Reserved diagram space   | Source code fallback if JS unavailable     | Readable source + short note  | Rendered diagram                | Diagram loads after text safely
+Tag/Series pages     | Static build placeholder | Short note + link back to Writing          | 404 or build validation error | Matching entries listed         | Draft-only groups show empty state
+```
+
+Empty state copy rules:
+
+- keep it under two short sentences.
+- do not apologize.
+- do not say "No items found."
+- include one useful next action.
+- preserve trust by naming the current state plainly.
+
 ### Home
 
 Home should be concise and scannable:
@@ -686,3 +934,37 @@ Required rendering QA:
 - Configuration updates are localized to `src/config/**`.
 - Page files do not duplicate content filtering, sorting, or relationship logic.
 - The architecture leaves room for search, comments, CMS, analytics, demos, and full multilingual routing without adding shallow pass-through Modules in v1.
+
+## Design Review Report
+
+`/plan-design-review` ran on 2026-04-28.
+
+Initial design completeness: 4/10.
+Final design completeness after plan updates: 8/10.
+
+Design decisions added:
+
+- Home uses a brand-led workbench hierarchy.
+- Empty states use warm public-workbench language with useful next actions.
+- The user journey follows Trust → Proof → Depth → Return.
+- Visual direction is editorial engineering workbench.
+- Minimum design system tokens and UI rules are required before page-specific UI.
+- Responsive and accessibility requirements are explicit.
+- Final font and palette approval should happen through `design-shotgun` after designer setup.
+
+Design artifacts:
+
+- No approved mockups were generated because the gstack designer is missing an OpenAI API key.
+- Designer command that needs setup: `/Users/jaybaek/gstack/design/dist/design setup`.
+
+NOT in scope for this review:
+
+- Final font and palette approval. Deferred to `design-shotgun`.
+- Final motion style for Mermaid diagrams. Deferred to visual design exploration and implementation review.
+- Live visual QA. Deferred to `/design-review` after implementation.
+
+What already exists:
+
+- No `DESIGN.md` exists yet.
+- No existing UI components or page patterns exist because the repo is still pre-implementation.
+- The design plan now acts as the temporary design source of truth until a `DESIGN.md` or approved mockup exists.
