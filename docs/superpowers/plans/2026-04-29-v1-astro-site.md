@@ -627,7 +627,7 @@ Run:
 npm run astro check
 ```
 
-Expected: passes or only reports missing pages that later tasks will add. If missing pages block the command, run it again after Task 3.
+Expected: passes for the foundation with no errors.
 
 - [ ] **Step 9: Commit foundation**
 
@@ -1212,7 +1212,7 @@ Run:
 npm run astro check
 ```
 
-Expected: PASS after pages exist, or fails only because pages are not created yet. If it fails on schema/reference/tag issues, fix those before continuing.
+Expected: PASS. Fix schema, reference, and tag issues before continuing.
 
 - [ ] **Step 8: Commit content graph**
 
