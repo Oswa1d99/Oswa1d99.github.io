@@ -1,0 +1,82 @@
+---
+import { focusGroups, tagDefinitions } from "../config/tags";
+---
+
+<form class="record-filters" data-record-filters>
+  <label>
+    Focus
+    <select name="focus">
+      <option value="">All focus areas</option>
+      {
+        focusGroups.map((group) => (
+          <option value={group.tags.join(" ")}>{group.label}</option>
+        ))
+      }
+    </select>
+  </label>
+  <label>
+    Format
+    <select name="format">
+      <option value="">All formats</option>
+      {
+        Object.entries(tagDefinitions)
+          .filter(([, value]) => value.role === "format")
+          .map(([slug, value]) => <option value={slug}>{value.label}</option>)
+      }
+    </select>
+  </label>
+  <label>
+    Sort
+    <select name="sort">
+      <option value="newest">Newest first</option>
+      <option value="oldest">Oldest first</option>
+    </select>
+  </label>
+  <p class="meta" data-result-count></p>
+</form>
+
+<script>
+  const form = document.querySelector("[data-record-filters]");
+  const cards = [...document.querySelectorAll("[data-record-card]")];
+  const count = document.querySelector("[data-result-count]");
+
+  function applyFilters() {
+    if (!(form instanceof HTMLFormElement)) return;
+    const data = new FormData(form);
+    const focus = String(data.get("focus") ?? "")
+      .split(" ")
+      .filter(Boolean);
+    const format = String(data.get("format") ?? "");
+    const sort = String(data.get("sort") ?? "newest");
+    const visible = [];
+
+    for (const card of cards) {
+      const tags = String(card.getAttribute("data-tags") ?? "").split(" ");
+      const matchesFocus =
+        focus.length === 0 || focus.some((tag) => tags.includes(tag));
+      const matchesFormat = !format || tags.includes(format);
+      const shouldShow = matchesFocus && matchesFormat;
+      card.toggleAttribute("hidden", !shouldShow);
+      if (shouldShow) visible.push(card);
+    }
+
+    const list = document.querySelector(".record-list");
+    if (list) {
+      const sorted = visible.sort((a, b) => {
+        const aTime = a.querySelector("time")?.getAttribute("datetime") ?? "";
+        const bTime = b.querySelector("time")?.getAttribute("datetime") ?? "";
+        return sort === "oldest"
+          ? aTime.localeCompare(bTime)
+          : bTime.localeCompare(aTime);
+      });
+      for (const item of sorted) list.appendChild(item);
+    }
+
+    if (count) {
+      count.textContent = `${visible.length} record${visible.length === 1 ? "" : "s"}`;
+    }
+  }
+
+  form?.addEventListener("change", applyFilters);
+  applyFilters();
+</script>

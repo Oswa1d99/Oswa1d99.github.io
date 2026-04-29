@@ -1,0 +1,26 @@
+---
+import { getCollection, render } from "astro:content";
+import ContentLayout from "../../layouts/ContentLayout.astro";
+
+export async function getStaticPaths() {
+  const records = await getCollection("writing", (entry) => !entry.data.draft);
+  return records.map((record) => ({
+    params: { slug: record.id },
+    props: { record },
+  }));
+}
+
+const { record } = Astro.props;
+const { Content } = await render(record);
+const hasMermaid = record.body?.includes("```mermaid") ?? false;
+---
+
+<ContentLayout
+  title={record.data.title}
+  description={record.data.description}
+  date={record.data.publishedAt}
+  tags={record.data.tags}
+  hasMermaid={hasMermaid}
+>
+  <Content />
+</ContentLayout>

@@ -1,0 +1,66 @@
+---
+import BaseLayout from "./BaseLayout.astro";
+import TagList from "../components/TagList.astro";
+import mermaidUrl from "mermaid/dist/mermaid.esm.min.mjs?url";
+
+interface Props {
+  title: string;
+  description: string;
+  date?: Date;
+  tags?: string[];
+  hasMermaid?: boolean;
+}
+
+const { title, description, date, tags = [], hasMermaid = false } = Astro.props;
+const mermaidRuntime = `
+const blocks = [...document.querySelectorAll("pre > code.language-mermaid")];
+if (blocks.length > 0) {
+  import(${JSON.stringify(mermaidUrl)}).then(({ default: mermaid }) => {
+    mermaid.initialize({ startOnLoad: false, securityLevel: "strict" });
+    blocks.forEach(async (block, index) => {
+      const source = block.textContent ?? "";
+      const pre = block.parentElement;
+      if (!pre) return;
+      pre.classList.add("mermaid-source");
+      try {
+        const result = await mermaid.render(\`mermaid-\${index}\`, source);
+        const container = document.createElement("div");
+        container.className = "mermaid-rendered";
+        container.innerHTML = result.svg;
+        pre.after(container);
+        pre.setAttribute("data-enhanced", "true");
+      } catch {
+        pre.removeAttribute("data-enhanced");
+      }
+    });
+  });
+}
+`;
+---
+
+<BaseLayout title={title} description={description}>
+  <article class="reading-frame">
+    <header>
+      {
+        date ? (
+          <p class="meta">
+            <time datetime={date.toISOString()}>
+              {date.toISOString().slice(0, 10)}
+            </time>
+          </p>
+        ) : null
+      }
+      <h1>{title}</h1>
+      <p>{description}</p>
+      {tags.length > 0 ? <TagList tags={tags} /> : null}
+    </header>
+    <div class="content-body" data-pagefind-body>
+      <slot />
+    </div>
+  </article>
+  {
+    hasMermaid ? (
+      <script type="module" is:inline set:html={mermaidRuntime} />
+    ) : null
+  }
+</BaseLayout>

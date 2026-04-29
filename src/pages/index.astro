@@ -1,0 +1,56 @@
+---
+import BaseLayout from "../layouts/BaseLayout.astro";
+import RecordList from "../components/RecordList.astro";
+import BuildSummary from "../components/BuildSummary.astro";
+import EmptyState from "../components/EmptyState.astro";
+import { site } from "../config/site";
+import { getAllRecords, getHomeContent } from "../lib/content/graph";
+
+const home = await getHomeContent();
+const allRecords = await getAllRecords();
+const relatedRecords = home.build
+  ? allRecords.filter((record) =>
+      home.build?.data.relatedWriting.some((ref) => ref.id === record.id),
+    )
+  : [];
+---
+
+<BaseLayout>
+  <section class="page-frame">
+    <p class="eyebrow">{site.role}</p>
+    <h1>{site.name}</h1>
+    <p>{site.thesisKo}</p>
+    <p>{site.thesisEn}</p>
+    <p>{site.links.map((link) => <a href={link.href}>{link.label}</a>)}</p>
+  </section>
+  <section class="page-frame">
+    <h2>Recent Records</h2>
+    {
+      home.records.length > 0 ? (
+        <RecordList records={home.records} headingLevel="h3" />
+      ) : (
+        <EmptyState
+          title="Records are being organized"
+          message="Start with About while the first public records are prepared."
+          href="/about/"
+          action="Read About"
+        />
+      )
+    }
+  </section>
+  <section class="page-frame">
+    <h2>Build</h2>
+    {
+      home.build ? (
+        <BuildSummary build={home.build} relatedRecords={relatedRecords} />
+      ) : (
+        <EmptyState
+          title="No public build thread is ready yet"
+          message="Start with Records or GitHub."
+          href="/records/"
+          action="Browse Records"
+        />
+      )
+    }
+  </section>
+</BaseLayout>

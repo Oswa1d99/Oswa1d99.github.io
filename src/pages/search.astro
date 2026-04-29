@@ -1,0 +1,64 @@
+---
+import BaseLayout from "../layouts/BaseLayout.astro";
+---
+
+<BaseLayout title="Search" description="Search published Records.">
+  <section class="records-frame">
+    <h1>Search Records</h1>
+    <label for="record-search">Search term</label>
+    <input id="record-search" type="search" autocomplete="off" />
+    <p class="meta" data-search-status></p>
+    <div data-search-results></div>
+  </section>
+  <script>
+    const input = document.querySelector("#record-search");
+    const status = document.querySelector("[data-search-status]");
+    const results = document.querySelector("[data-search-results]");
+
+    async function loadPagefind() {
+      try {
+        const pagefindPath = "/pagefind/pagefind.js";
+        return await import(/* @vite-ignore */ pagefindPath);
+      } catch {
+        if (status) {
+          status.innerHTML =
+            'Search is unavailable. <a href="/records/">Browse Records</a> instead.';
+        }
+        return null;
+      }
+    }
+
+    const pagefindPromise = loadPagefind();
+
+    input?.addEventListener("input", async (event) => {
+      const query =
+        event.target instanceof HTMLInputElement
+          ? event.target.value.trim()
+          : "";
+      if (!results || !status) return;
+      results.innerHTML = "";
+      if (!query) {
+        status.textContent = "";
+        return;
+      }
+      const pagefind = await pagefindPromise;
+      if (!pagefind) return;
+      const search = await pagefind.search(query);
+      if (search.results.length === 0) {
+        status.textContent =
+          "No records matched this search. Try a broader term.";
+        return;
+      }
+      status.textContent = `${search.results.length} result${
+        search.results.length === 1 ? "" : "s"
+      }`;
+      for (const result of search.results) {
+        const data = await result.data();
+        const article = document.createElement("article");
+        article.className = "record-card";
+        article.innerHTML = `<h2><a href="${data.url}">${data.meta.title}</a></h2><p>${data.excerpt}</p>`;
+        results.appendChild(article);
+      }
+    });
+  </script>
+</BaseLayout>

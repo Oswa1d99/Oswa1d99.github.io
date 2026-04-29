@@ -1,0 +1,33 @@
+---
+import BaseLayout from "../layouts/BaseLayout.astro";
+import { site } from "../config/site";
+---
+
+<BaseLayout
+  title="About"
+  description="Professional context, contact, and confidential-safe work themes."
+>
+  <section class="reading-frame">
+    <h1>About</h1>
+    <p>
+      Jay Baek is an AI Engineer building practical AI systems through
+      disciplined study, technical writing, and focused public build work.
+    </p>
+    <h2>Work themes</h2>
+    <p>
+      Company work is described here only by theme: AI systems, product
+      engineering constraints, reliability, and practical automation. Internal
+      project details stay private.
+    </p>
+    <h2>Contact</h2>
+    <ul>
+      {
+        site.links.map((link) => (
+          <li>
+            <a href={link.href}>{link.label}</a>
+          </li>
+        ))
+      }
+    </ul>
+  </section>
+</BaseLayout>

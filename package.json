@@ -15,7 +15,8 @@
     "lint": "prettier --check \"src/**/*.{astro,css,ts}\" \"*.{js,json,mjs,ts}\" \".github/**/*.yml\" --ignore-unknown --no-error-on-unmatched-pattern"
   },
   "dependencies": {
-    "astro": "6.1.10"
+    "astro": "6.1.10",
+    "mermaid": "^11.14.0"
   },
   "devDependencies": {
     "@astrojs/check": "0.9.9",

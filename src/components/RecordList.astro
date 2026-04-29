@@ -1,0 +1,45 @@
+---
+import TagList from "./TagList.astro";
+import type { WritingEntryLike } from "../lib/content/graph";
+
+interface Props {
+  records: WritingEntryLike[];
+  headingLevel?: "h2" | "h3";
+}
+
+const { records, headingLevel = "h2" } = Astro.props;
+const Heading = headingLevel;
+---
+
+<ul class="record-list">
+  {
+    records.map((record) => (
+      <li
+        class="record-card"
+        data-record-card
+        data-tags={record.data.tags.join(" ")}
+        data-format={
+          record.data.tags.find(
+            (tag) =>
+              tag.endsWith("note") ||
+              tag.endsWith("memo") ||
+              tag === "reflection" ||
+              tag === "build-log",
+          ) ?? ""
+        }
+      >
+        <p class="meta">
+          <time datetime={record.data.publishedAt.toISOString()}>
+            {record.data.publishedAt.toISOString().slice(0, 10)}
+          </time>
+          {record.data.primaryLabel ? ` / ${record.data.primaryLabel}` : ""}
+        </p>
+        <Heading>
+          <a href={`/records/${record.id}/`}>{record.data.title}</a>
+        </Heading>
+        <p>{record.data.description}</p>
+        <TagList tags={record.data.tags} />
+      </li>
+    ))
+  }
+</ul>
