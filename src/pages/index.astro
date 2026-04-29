@@ -27,7 +27,7 @@ const relatedRecords = home.build
     <h2>Recent Records</h2>
     {
       home.records.length > 0 ? (
-        <RecordList records={home.records} headingLevel="h3" />
+        <RecordList records={home.records} headingLevel="h3" tagLimit={0} />
       ) : (
         <EmptyState
           title="Records are being organized"

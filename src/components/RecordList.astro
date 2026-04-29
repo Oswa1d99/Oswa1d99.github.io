@@ -5,9 +5,10 @@ import type { WritingEntryLike } from "../lib/content/graph";
 interface Props {
   records: WritingEntryLike[];
   headingLevel?: "h2" | "h3";
+  tagLimit?: number;
 }
 
-const { records, headingLevel = "h2" } = Astro.props;
+const { records, headingLevel = "h2", tagLimit } = Astro.props;
 const Heading = headingLevel;
 ---
 
@@ -38,7 +39,15 @@ const Heading = headingLevel;
           <a href={`/records/${record.id}/`}>{record.data.title}</a>
         </Heading>
         <p>{record.data.description}</p>
-        <TagList tags={record.data.tags} />
+        {tagLimit === undefined || tagLimit > 0 ? (
+          <TagList
+            tags={
+              tagLimit === undefined
+                ? record.data.tags
+                : record.data.tags.slice(0, tagLimit)
+            }
+          />
+        ) : null}
       </li>
     ))
   }

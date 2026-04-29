@@ -71,6 +71,13 @@ if (blocks.length > 0) {
     </header>
     <div class="content-body" data-pagefind-body>
       {
+        description ? (
+          <span class="visually-hidden" data-pagefind-meta="description">
+            {description}
+          </span>
+        ) : null
+      }
+      {
         tags.length > 0 ? (
           <span class="visually-hidden" data-pagefind-meta="tags">
             {tagLabels}

@@ -26,6 +26,17 @@ import { focusGroups, tagDefinitions } from "../config/tags";
     </select>
   </label>
   <label>
+    Tag
+    <select name="tag">
+      <option value="">All tags</option>
+      {
+        Object.entries(tagDefinitions).map(([slug, value]) => (
+          <option value={slug}>{value.label}</option>
+        ))
+      }
+    </select>
+  </label>
+  <label>
     Sort
     <select name="sort">
       <option value="newest">Newest first</option>
@@ -51,6 +62,7 @@ import { focusGroups, tagDefinitions } from "../config/tags";
       .split(" ")
       .filter(Boolean);
     const format = String(data.get("format") ?? "");
+    const tag = String(data.get("tag") ?? "");
     const sort = String(data.get("sort") ?? "newest");
     const visible = [];
 
@@ -59,7 +71,8 @@ import { focusGroups, tagDefinitions } from "../config/tags";
       const matchesFocus =
         focus.length === 0 || focus.some((tag) => tags.includes(tag));
       const matchesFormat = !format || tags.includes(format);
-      const shouldShow = matchesFocus && matchesFormat;
+      const matchesTag = !tag || tags.includes(tag);
+      const shouldShow = matchesFocus && matchesFormat && matchesTag;
       card.toggleAttribute("hidden", !shouldShow);
       if (shouldShow) visible.push(card);
     }

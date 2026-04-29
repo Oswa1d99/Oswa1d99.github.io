@@ -113,6 +113,12 @@ import BaseLayout from "../layouts/BaseLayout.astro";
       target.append(list);
     }
 
+    function getResultDescription(meta: Record<string, unknown>) {
+      return typeof meta.description === "string"
+        ? meta.description.trim()
+        : "";
+    }
+
     input?.addEventListener("input", async (event) => {
       const sequence = ++searchSequence;
       const query =
@@ -160,11 +166,17 @@ import BaseLayout from "../layouts/BaseLayout.astro";
 
         const tags = getResultTags(data.meta ?? {});
         const excerpt = document.createElement("p");
-        appendSafeExcerpt(excerpt, data.excerpt);
+        if (typeof data.excerpt === "string" && data.excerpt.trim()) {
+          appendSafeExcerpt(excerpt, data.excerpt);
+        } else {
+          excerpt.textContent = getResultDescription(data.meta ?? {});
+        }
 
         article.append(heading);
         appendTags(article, tags);
-        article.append(excerpt);
+        if (excerpt.textContent?.trim()) {
+          article.append(excerpt);
+        }
         results.appendChild(article);
       }
     });

@@ -9,6 +9,7 @@ export async function getStaticPaths() {
 
 const { build } = Astro.props;
 const { Content } = await render(build);
+const hasMermaid = build.body?.includes("```mermaid") ?? false;
 ---
 
 <ContentLayout
@@ -16,6 +17,7 @@ const { Content } = await render(build);
   description={build.data.description}
   date={build.data.updatedAt}
   tags={build.data.tags}
+  hasMermaid={hasMermaid}
 >
   <Content />
 </ContentLayout>
