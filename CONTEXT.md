@@ -34,6 +34,10 @@
 
 **Deployment Module**: The Module that owns GitHub Pages deployment assumptions, including repository name, Astro `site`, Astro `base`, canonical URLs, asset paths, and deploy workflow checks.
 
+**Validation Module**: The Module that owns local checks, browser QA, route smoke checks, deployment smoke checks, and the mapping between expected behavior and verification commands.
+
+**Design System Module**: The Module that owns visual direction, typography, color, spacing, layout, motion, and UI rules for implementation and QA.
+
 **Content Fixture**: Test or sample content used to verify schema, Content Graph behavior, rendering behavior, and authoring rules without depending on real portfolio content.
 
 **Diagram Asset Automation**: Deferred command/check based automation for regenerating source-controlled diagram assets and detecting drift between `.mmd` sources and generated `.svg` files.

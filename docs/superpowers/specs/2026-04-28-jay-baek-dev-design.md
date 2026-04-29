@@ -2,6 +2,19 @@
 
 Date: 2026-04-28
 
+## Active Source Of Truth
+
+This document is planning history. Stable decisions have been promoted into active Module documents:
+
+- `CONTEXT.md` owns domain vocabulary.
+- `docs/architecture.md` owns Module map, seams, and folder ownership rules.
+- `docs/content-guide.md` owns content authoring rules.
+- `docs/deployment.md` owns domain, GitHub Pages, Astro `site`, Astro `base`, canonical URL, and asset path assumptions.
+- `docs/validation.md` owns local checks, browser QA, route smoke checks, and deployment smoke checks.
+- `DESIGN.md` will own the visual design system after `/design-consultation` completes.
+
+If this document conflicts with an active Module document, use the active Module document and update or supersede the stale section here later.
+
 ## Summary
 
 Jay Baek.dev is an Astro-based personal technical platform for a junior AI Engineer building toward Korean unicorn tech companies and Silicon Valley opportunities. The site should make a strong first impression as a practical AI Engineer while also serving as a public record of growth.
