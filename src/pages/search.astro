@@ -5,9 +5,11 @@ import BaseLayout from "../layouts/BaseLayout.astro";
 <BaseLayout title="Search" description="Search published Records.">
   <section class="records-frame">
     <h1>Search Records</h1>
-    <label for="record-search">Search term</label>
-    <input id="record-search" type="search" autocomplete="off" />
-    <p class="meta" data-search-status></p>
+    <div class="search-control">
+      <label for="record-search">Search term</label>
+      <input id="record-search" type="search" autocomplete="off" />
+    </div>
+    <p class="search-status" data-search-status></p>
     <div data-search-results></div>
   </section>
   <script>
@@ -18,6 +20,9 @@ import BaseLayout from "../layouts/BaseLayout.astro";
 
     async function loadPagefind() {
       try {
+        if (import.meta.env.DEV) {
+          throw new Error("Pagefind is generated during production build.");
+        }
         const pagefindPath = "/pagefind/pagefind.js";
         return await import(/* @vite-ignore */ pagefindPath);
       } catch {
