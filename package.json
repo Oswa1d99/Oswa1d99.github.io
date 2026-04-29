@@ -1,0 +1,28 @@
+{
+  "name": "jaybaek-dev",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "astro dev",
+    "start": "astro dev",
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "astro": "astro",
+    "build": "astro build && pagefind --site dist",
+    "preview": "astro preview",
+    "format": "prettier --write .",
+    "lint": "prettier --check ."
+  },
+  "dependencies": {
+    "@astrojs/check": "latest",
+    "astro": "latest",
+    "mermaid": "latest",
+    "typescript": "latest"
+  },
+  "devDependencies": {
+    "pagefind": "latest",
+    "prettier": "latest",
+    "vitest": "latest"
+  }
+}
