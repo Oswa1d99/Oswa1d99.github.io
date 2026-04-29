@@ -1,6 +1,6 @@
 import { defineConfig } from "astro/config";
 
-const site = "https://jaybaek.github.io";
+const site = "https://oswa1d99.github.io";
 
 export default defineConfig({
   site,
