@@ -10,8 +10,6 @@ export const site = {
   thesisEn:
     "Building toward practical AI systems through study notes, engineering memos, and one focused open-source build thread.",
   links: [
-    { label: "GitHub", href: "https://github.com/Oswa1d99" },
-    { label: "LinkedIn", href: "https://www.linkedin.com/" },
-    { label: "Email", href: "mailto:jay@example.com" }
+    { label: "GitHub", href: "https://github.com/Oswa1d99" }
   ],
 } as const;

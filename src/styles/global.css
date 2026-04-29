@@ -228,10 +228,6 @@ select {
   background: var(--color-surface-soft);
 }
 
-.mermaid-source[data-enhanced="true"] {
-  display: none;
-}
-
 mark {
   background: #fff1a8;
   color: var(--color-text);
