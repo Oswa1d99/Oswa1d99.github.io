@@ -13,7 +13,7 @@ interface Props {
 
 const { title, description, date, tags = [], hasMermaid = false } = Astro.props;
 const mermaidRuntime = `
-const blocks = [...document.querySelectorAll("pre > code.language-mermaid")];
+const blocks = [...document.querySelectorAll('pre[data-language="mermaid"] > code')];
 if (blocks.length > 0) {
   import(${JSON.stringify(mermaidUrl)}).then(({ default: mermaid }) => {
     mermaid.initialize({ startOnLoad: false, securityLevel: "strict" });
