@@ -13,7 +13,7 @@ export const tagDefinitions = {
   "engineering-memo": { label: "Engineering memo", role: "format" },
   diagram: { label: "Diagram", role: "format" },
   reflection: { label: "Reflection", role: "format" },
-  "build-log": { label: "Build log", role: "format" }
+  "build-log": { label: "Build log", role: "format" },
 } as const;
 
 export type TagSlug = keyof typeof tagDefinitions;
@@ -29,7 +29,12 @@ export const focusGroups = [
   {
     label: "System design",
     slug: "system-design",
-    tags: ["system-design", "queues", "indexing", "network"] satisfies TagSlug[],
+    tags: [
+      "system-design",
+      "queues",
+      "indexing",
+      "network",
+    ] satisfies TagSlug[],
   },
   {
     label: "AI engineering practice",

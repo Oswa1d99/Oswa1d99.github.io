@@ -10,7 +10,9 @@ interface Props {
   lang?: string;
 }
 
-const pageTitle = Astro.props.title ? `${Astro.props.title} | ${site.name}` : site.title;
+const pageTitle = Astro.props.title
+  ? `${Astro.props.title} | ${site.name}`
+  : site.title;
 const description = Astro.props.description ?? site.description;
 const lang = Astro.props.lang ?? "en";
 ---

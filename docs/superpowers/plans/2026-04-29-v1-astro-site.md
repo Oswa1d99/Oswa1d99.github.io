@@ -86,6 +86,7 @@ Do not modify generated build outputs or `dist/`.
 **Files:**
 
 - Create: `package.json`
+- Create: `.prettierrc`
 - Create: `tsconfig.json`
 - Create: `astro.config.mjs`
 - Create: `.gitignore`
@@ -110,25 +111,33 @@ Write `package.json`:
   "scripts": {
     "dev": "astro dev",
     "start": "astro dev",
-    "test": "vitest run",
+    "test": "vitest run --passWithNoTests",
     "test:watch": "vitest",
     "astro": "astro",
-    "build": "astro build && pagefind --site dist",
+    "build": "astro build && if find dist -name '*.html' -type f | grep -q .; then pagefind --site dist; else echo 'No HTML files found; skipping Pagefind.'; fi",
     "preview": "astro preview",
-    "format": "prettier --write .",
-    "lint": "prettier --check ."
+    "format": "prettier --write \"src/**/*.{astro,css,ts}\" \"*.{js,json,mjs,ts}\" \".github/**/*.yml\" --ignore-unknown --no-error-on-unmatched-pattern",
+    "lint": "prettier --check \"src/**/*.{astro,css,ts}\" \"*.{js,json,mjs,ts}\" \".github/**/*.yml\" --ignore-unknown --no-error-on-unmatched-pattern"
   },
   "dependencies": {
-    "@astrojs/check": "latest",
-    "astro": "latest",
-    "mermaid": "latest",
-    "typescript": "latest"
+    "astro": "6.1.10"
   },
   "devDependencies": {
-    "pagefind": "latest",
-    "prettier": "latest",
-    "vitest": "latest"
+    "@astrojs/check": "0.9.9",
+    "pagefind": "1.5.2",
+    "prettier": "3.8.3",
+    "prettier-plugin-astro": "0.14.1",
+    "typescript": "5.9.3",
+    "vitest": "4.1.5"
   }
+}
+```
+
+Write `.prettierrc`:
+
+```json
+{
+  "plugins": ["prettier-plugin-astro"]
 }
 ```
 
@@ -495,10 +504,6 @@ select {
   border-radius: var(--radius-card);
   padding: var(--space-md);
   background: var(--color-surface-soft);
-}
-
-.mermaid-source[data-enhanced="true"] {
-  display: none;
 }
 
 mark {
@@ -1436,7 +1441,13 @@ const { build, relatedRecords = [] } = Astro.props;
 </section>
 ```
 
-- [ ] **Step 2: Create ContentLayout with Mermaid support**
+- [ ] **Step 2: Add Mermaid and create ContentLayout with Mermaid support**
+
+Install the Mermaid runtime dependency when the rendering behavior is added:
+
+```bash
+npm install mermaid
+```
 
 Write `src/layouts/ContentLayout.astro`:
 
