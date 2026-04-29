@@ -2,9 +2,11 @@ import { describe, expect, it } from "vitest";
 import {
   buildTagIndex,
   getFeaturedWriting,
+  getBuildHref,
   getHomeSelection,
   getProjectsForBuild,
   getPublicRecordEntry,
+  getRecordHref,
   getRecordsForSeries,
   getRecordsForTag,
   prepareWritingEntries,
@@ -16,7 +18,6 @@ import {
 const writing: WritingEntryLike[] = [
   {
     id: "published-new",
-    slug: "published-new",
     collection: "writing",
     data: {
       title: "Published New",
@@ -34,7 +35,6 @@ const writing: WritingEntryLike[] = [
   },
   {
     id: "published-old",
-    slug: "published-old",
     collection: "writing",
     data: {
       title: "Published Old",
@@ -50,7 +50,6 @@ const writing: WritingEntryLike[] = [
   },
   {
     id: "published-featured-oldest",
-    slug: "published-featured-oldest",
     collection: "writing",
     data: {
       title: "Published Featured Oldest",
@@ -65,7 +64,6 @@ const writing: WritingEntryLike[] = [
   },
   {
     id: "draft",
-    slug: "draft",
     collection: "writing",
     data: {
       title: "Draft",
@@ -83,7 +81,6 @@ const writing: WritingEntryLike[] = [
 const projects: ProjectEntryLike[] = [
   {
     id: "project-one",
-    slug: "project-one",
     collection: "projects",
     data: {
       title: "Project One",
@@ -99,7 +96,6 @@ const projects: ProjectEntryLike[] = [
   },
   {
     id: "project-old",
-    slug: "project-old",
     collection: "projects",
     data: {
       title: "Project Old",
@@ -118,7 +114,6 @@ const projects: ProjectEntryLike[] = [
 const series: SeriesEntryLike[] = [
   {
     id: "series-one",
-    slug: "series-one",
     collection: "series",
     data: {
       title: "Series One",
@@ -183,6 +178,11 @@ describe("content graph", () => {
       "project-one",
       "project-old",
     ]);
+  });
+
+  it("builds public hrefs from entry ids", () => {
+    expect(getRecordHref(writing[0])).toBe("/records/published-new/");
+    expect(getBuildHref(projects[0])).toBe("/build/project-one/");
   });
 
   it("creates stable Home selection with available content", () => {

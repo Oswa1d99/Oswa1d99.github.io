@@ -5,7 +5,6 @@ type ReferenceLike = { collection: string; id: string };
 
 export type WritingEntryLike = {
   id: string;
-  slug: string;
   collection: "writing";
   data: {
     title: string;
@@ -24,7 +23,6 @@ export type WritingEntryLike = {
 
 export type ProjectEntryLike = {
   id: string;
-  slug: string;
   collection: "projects";
   data: {
     title: string;
@@ -43,7 +41,6 @@ export type ProjectEntryLike = {
 
 export type SeriesEntryLike = {
   id: string;
-  slug: string;
   collection: "series";
   data: {
     title: string;
@@ -112,6 +109,14 @@ export function getRecordsForSeries(
 
 export function getProjectsForBuild(entries: ProjectEntryLike[]) {
   return [...entries].sort(byUpdatedProject);
+}
+
+export function getRecordHref(entry: WritingEntryLike) {
+  return `/records/${entry.id}/`;
+}
+
+export function getBuildHref(entry: ProjectEntryLike) {
+  return `/build/${entry.id}/`;
 }
 
 export function buildTagIndex(
@@ -200,9 +205,9 @@ export async function getTagIndex() {
   );
 }
 
-export async function getRecordBySlug(slug: string) {
+export async function getRecordById(id: string) {
   const { getEntry } = await import("astro:content");
-  const entry = (await getEntry("writing", slug)) as
+  const entry = (await getEntry("writing", id)) as
     | CollectionEntry<"writing">
     | undefined;
   return getPublicRecordEntry(entry as WritingEntryLike | undefined) as
@@ -210,9 +215,9 @@ export async function getRecordBySlug(slug: string) {
     | undefined;
 }
 
-export async function getBuildBySlug(slug: string) {
+export async function getBuildById(id: string) {
   const { getEntry } = await import("astro:content");
-  return (await getEntry("projects", slug)) as
+  return (await getEntry("projects", id)) as
     | CollectionEntry<"projects">
     | undefined;
 }

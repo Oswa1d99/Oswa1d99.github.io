@@ -1,5 +1,6 @@
-import { defineCollection, reference, z } from "astro:content";
+import { defineCollection, reference } from "astro:content";
 import { glob } from "astro/loaders";
+import { z } from "astro/zod";
 import { tagSlugs } from "./config/tags";
 
 const tagEnum = z.enum(tagSlugs as [string, ...string[]]);
@@ -29,8 +30,8 @@ const projects = defineCollection({
     status: z.enum(["Exploring", "Building", "Maintained", "Paused"]),
     featured: z.boolean().default(false),
     stack: z.array(z.string()).default([]),
-    githubUrl: z.string().url().optional(),
-    demoUrl: z.string().url().optional(),
+    githubUrl: z.url().optional(),
+    demoUrl: z.url().optional(),
     startedAt: z.coerce.date(),
     updatedAt: z.coerce.date(),
     tags: z.array(tagEnum).default([]),

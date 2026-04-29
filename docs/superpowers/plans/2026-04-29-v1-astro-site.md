@@ -654,8 +654,9 @@ git commit -m "feat: scaffold Astro site foundation"
 Write `src/content.config.ts`:
 
 ```ts
-import { defineCollection, reference, z } from "astro:content";
+import { defineCollection, reference } from "astro:content";
 import { glob } from "astro/loaders";
+import { z } from "astro/zod";
 import { tagSlugs } from "./config/tags";
 
 const tagEnum = z.enum(tagSlugs as [string, ...string[]]);
@@ -685,8 +686,8 @@ const projects = defineCollection({
     status: z.enum(["Exploring", "Building", "Maintained", "Paused"]),
     featured: z.boolean().default(false),
     stack: z.array(z.string()).default([]),
-    githubUrl: z.string().url().optional(),
-    demoUrl: z.string().url().optional(),
+    githubUrl: z.url().optional(),
+    demoUrl: z.url().optional(),
     startedAt: z.coerce.date(),
     updatedAt: z.coerce.date(),
     tags: z.array(tagEnum).default([]),
@@ -876,7 +877,6 @@ import {
 const writing: WritingEntryLike[] = [
   {
     id: "published-new",
-    slug: "published-new",
     collection: "writing",
     data: {
       title: "Published New",
@@ -894,7 +894,6 @@ const writing: WritingEntryLike[] = [
   },
   {
     id: "published-old",
-    slug: "published-old",
     collection: "writing",
     data: {
       title: "Published Old",
@@ -910,7 +909,6 @@ const writing: WritingEntryLike[] = [
   },
   {
     id: "draft",
-    slug: "draft",
     collection: "writing",
     data: {
       title: "Draft",
@@ -928,7 +926,6 @@ const writing: WritingEntryLike[] = [
 const projects: ProjectEntryLike[] = [
   {
     id: "project-one",
-    slug: "project-one",
     collection: "projects",
     data: {
       title: "Project One",
@@ -947,7 +944,6 @@ const projects: ProjectEntryLike[] = [
 const series: SeriesEntryLike[] = [
   {
     id: "series-one",
-    slug: "series-one",
     collection: "series",
     data: {
       title: "Series One",
@@ -1020,7 +1016,6 @@ type ReferenceLike = { collection: string; id: string };
 
 export type WritingEntryLike = {
   id: string;
-  slug: string;
   collection: "writing";
   data: {
     title: string;
@@ -1039,7 +1034,6 @@ export type WritingEntryLike = {
 
 export type ProjectEntryLike = {
   id: string;
-  slug: string;
   collection: "projects";
   data: {
     title: string;
@@ -1058,7 +1052,6 @@ export type ProjectEntryLike = {
 
 export type SeriesEntryLike = {
   id: string;
-  slug: string;
   collection: "series";
   data: {
     title: string;
@@ -1185,12 +1178,12 @@ export async function getTagIndex() {
   return buildTagIndex(writing as WritingEntryLike[], projects as ProjectEntryLike[]);
 }
 
-export async function getRecordBySlug(slug: string) {
-  return (await getEntry("writing", slug)) as CollectionEntry<"writing"> | undefined;
+export async function getRecordById(id: string) {
+  return (await getEntry("writing", id)) as CollectionEntry<"writing"> | undefined;
 }
 
-export async function getBuildBySlug(slug: string) {
-  return (await getEntry("projects", slug)) as CollectionEntry<"projects"> | undefined;
+export async function getBuildById(id: string) {
+  return (await getEntry("projects", id)) as CollectionEntry<"projects"> | undefined;
 }
 ```
 
@@ -1316,7 +1309,7 @@ const Heading = headingLevel;
         <time datetime={record.data.publishedAt.toISOString()}>{record.data.publishedAt.toISOString().slice(0, 10)}</time>
         {record.data.primaryLabel ? ` / ${record.data.primaryLabel}` : ""}
       </p>
-      <Heading><a href={`/records/${record.slug}/`}>{record.data.title}</a></Heading>
+      <Heading><a href={`/records/${record.id}/`}>{record.data.title}</a></Heading>
       <p>{record.data.description}</p>
       <TagList tags={record.data.tags} />
     </li>
@@ -1417,7 +1410,7 @@ const { build, relatedRecords = [] } = Astro.props;
 
 <section class="build-panel">
   <p class="meta">{build.data.status} / updated {build.data.updatedAt.toISOString().slice(0, 10)}</p>
-  <h2><a href={`/build/${build.slug}/`}>{build.data.title}</a></h2>
+  <h2><a href={`/build/${build.id}/`}>{build.data.title}</a></h2>
   <p>{build.data.description}</p>
   <TagList tags={build.data.tags} />
   <div>
@@ -1428,7 +1421,7 @@ const { build, relatedRecords = [] } = Astro.props;
     <div>
       <h3>Related Records</h3>
       <ul>
-        {relatedRecords.map((record) => <li><a href={`/records/${record.slug}/`}>{record.data.title}</a></li>)}
+        {relatedRecords.map((record) => <li><a href={`/records/${record.id}/`}>{record.data.title}</a></li>)}
       </ul>
     </div>
   ) : null}
@@ -1695,7 +1688,7 @@ import ContentLayout from "../../layouts/ContentLayout.astro";
 
 export async function getStaticPaths() {
   const records = await getCollection("writing", (entry) => !entry.data.draft);
-  return records.map((record) => ({ params: { slug: record.slug }, props: { record } }));
+  return records.map((record) => ({ params: { slug: record.id }, props: { record } }));
 }
 
 const { record } = Astro.props;
@@ -1717,7 +1710,7 @@ import ContentLayout from "../../layouts/ContentLayout.astro";
 
 export async function getStaticPaths() {
   const builds = await getCollection("projects");
-  return builds.map((build) => ({ params: { slug: build.slug }, props: { build } }));
+  return builds.map((build) => ({ params: { slug: build.id }, props: { build } }));
 }
 
 const { build } = Astro.props;
@@ -1769,7 +1762,7 @@ import { getAllRecords, getRecordsForSeries } from "../../lib/content/graph";
 
 export async function getStaticPaths() {
   const series = await getCollection("series");
-  return series.map((item) => ({ params: { slug: item.slug }, props: { series: item } }));
+  return series.map((item) => ({ params: { slug: item.id }, props: { series: item } }));
 }
 
 const { series } = Astro.props;
