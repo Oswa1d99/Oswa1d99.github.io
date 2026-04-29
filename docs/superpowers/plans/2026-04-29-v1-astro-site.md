@@ -205,11 +205,7 @@ export const site = {
   thesisKo: "실전 문제를 AI 시스템으로 바꾸고, 그 과정을 기록으로 증명합니다.",
   thesisEn:
     "Building toward practical AI systems through study notes, engineering memos, and one focused open-source build thread.",
-  links: [
-    { label: "GitHub", href: "https://github.com/Oswa1d99" },
-    { label: "LinkedIn", href: "https://www.linkedin.com/" },
-    { label: "Email", href: "mailto:jay@example.com" }
-  ],
+  links: [{ label: "GitHub", href: "https://github.com/Oswa1d99" }],
 } as const;
 ```
 
@@ -596,14 +592,16 @@ import "../styles/global.css";
 interface Props {
   title?: string;
   description?: string;
+  lang?: string;
 }
 
 const pageTitle = Astro.props.title ? `${Astro.props.title} | ${site.name}` : site.title;
 const description = Astro.props.description ?? site.description;
+const lang = Astro.props.lang ?? "en";
 ---
 
 <!doctype html>
-<html lang="ko">
+<html lang={lang}>
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />

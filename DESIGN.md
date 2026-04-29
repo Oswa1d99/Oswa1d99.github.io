@@ -93,6 +93,7 @@ Search
 - **Data/Tables:** IBM Plex Mono or JetBrains Mono. Use only where tabular rhythm matters: dates, tags, status labels, code-like metadata.
 - **Code:** IBM Plex Mono or JetBrains Mono.
 - **Loading:** Prefer self-hosted fonts when implementation begins. Google Fonts or CDN loading is acceptable only if the static deployment path remains simple.
+- **Document language:** Default the v1 document language to English, with Korean thesis or mixed-language content allowed inside page content.
 - **Scale:**
   - xs: 12px metadata and dense labels
   - sm: 14px secondary text and nav
