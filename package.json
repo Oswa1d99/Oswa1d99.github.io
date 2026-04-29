@@ -15,6 +15,8 @@
     "lint": "prettier --check \"src/**/*.{astro,css,ts}\" \"*.{js,json,mjs,ts}\" \".github/**/*.yml\" --ignore-unknown --no-error-on-unmatched-pattern"
   },
   "dependencies": {
+    "@fontsource/ibm-plex-mono": "^5.2.7",
+    "@fontsource/pretendard": "^5.2.5",
     "astro": "6.1.10",
     "mermaid": "^11.14.0"
   },
