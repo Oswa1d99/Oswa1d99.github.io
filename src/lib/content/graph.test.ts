@@ -4,6 +4,7 @@ import {
   getFeaturedWriting,
   getHomeSelection,
   getProjectsForBuild,
+  getPublicRecordEntry,
   getRecordsForSeries,
   getRecordsForTag,
   prepareWritingEntries,
@@ -48,6 +49,21 @@ const writing: WritingEntryLike[] = [
     },
   },
   {
+    id: "published-featured-oldest",
+    slug: "published-featured-oldest",
+    collection: "writing",
+    data: {
+      title: "Published Featured Oldest",
+      description: "Older featured public record",
+      publishedAt: new Date("2026-04-27"),
+      draft: false,
+      tags: ["evaluation", "study-note"],
+      relatedProjects: [],
+      language: "mixed",
+      featured: true,
+    },
+  },
+  {
     id: "draft",
     slug: "draft",
     collection: "writing",
@@ -81,6 +97,22 @@ const projects: ProjectEntryLike[] = [
       relatedWriting: [{ collection: "writing", id: "published-new" }],
     },
   },
+  {
+    id: "project-old",
+    slug: "project-old",
+    collection: "projects",
+    data: {
+      title: "Project Old",
+      description: "Older build thread",
+      status: "Maintained",
+      featured: true,
+      stack: ["TypeScript"],
+      startedAt: new Date("2026-04-25"),
+      updatedAt: new Date("2026-04-26"),
+      tags: ["ai-engineering"],
+      relatedWriting: [],
+    },
+  },
 ];
 
 const series: SeriesEntryLike[] = [
@@ -103,12 +135,27 @@ describe("content graph", () => {
     expect(records.map((entry) => entry.id)).toEqual([
       "published-new",
       "published-old",
+      "published-featured-oldest",
     ]);
   });
 
-  it("orders featured writing predictably", () => {
+  it("orders featured writing newest first", () => {
     const featured = getFeaturedWriting(writing);
-    expect(featured.map((entry) => entry.id)).toEqual(["published-new"]);
+    expect(featured.map((entry) => entry.id)).toEqual([
+      "published-new",
+      "published-featured-oldest",
+    ]);
+  });
+
+  it("returns undefined for draft record entries", () => {
+    expect(
+      getPublicRecordEntry(writing.find((entry) => entry.id === "draft")),
+    ).toBeUndefined();
+    expect(
+      getPublicRecordEntry(
+        writing.find((entry) => entry.id === "published-new"),
+      )?.id,
+    ).toBe("published-new");
   });
 
   it("builds a stable tag index without draft metadata", () => {
@@ -131,9 +178,10 @@ describe("content graph", () => {
     ).toEqual(["published-old", "published-new"]);
   });
 
-  it("returns featured Build entries newest first", () => {
+  it("returns Build entries updated-newest first", () => {
     expect(getProjectsForBuild(projects).map((entry) => entry.id)).toEqual([
       "project-one",
+      "project-old",
     ]);
   });
 
@@ -142,6 +190,7 @@ describe("content graph", () => {
     expect(home.records.map((entry) => entry.id)).toEqual([
       "published-new",
       "published-old",
+      "published-featured-oldest",
     ]);
     expect(home.build?.id).toBe("project-one");
   });

@@ -81,6 +81,14 @@ export function prepareWritingEntries(entries: WritingEntryLike[]) {
   return entries.filter((entry) => !entry.data.draft).sort(byNewestWriting);
 }
 
+export function getPublicRecordEntry(entry: WritingEntryLike | undefined) {
+  if (!entry || entry.data.draft) {
+    return undefined;
+  }
+
+  return entry;
+}
+
 export function getFeaturedWriting(entries: WritingEntryLike[], limit = 4) {
   return prepareWritingEntries(entries)
     .filter((entry) => entry.data.featured)
@@ -194,7 +202,10 @@ export async function getTagIndex() {
 
 export async function getRecordBySlug(slug: string) {
   const { getEntry } = await import("astro:content");
-  return (await getEntry("writing", slug)) as
+  const entry = (await getEntry("writing", slug)) as
+    | CollectionEntry<"writing">
+    | undefined;
+  return getPublicRecordEntry(entry as WritingEntryLike | undefined) as
     | CollectionEntry<"writing">
     | undefined;
 }
