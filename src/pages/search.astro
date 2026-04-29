@@ -14,6 +14,7 @@ import BaseLayout from "../layouts/BaseLayout.astro";
     const input = document.querySelector("#record-search");
     const status = document.querySelector("[data-search-status]");
     const results = document.querySelector("[data-search-results]");
+    let searchSequence = 0;
 
     async function loadPagefind() {
       try {
@@ -82,7 +83,38 @@ import BaseLayout from "../layouts/BaseLayout.astro";
       }
     }
 
+    function getResultTags(meta: Record<string, unknown>) {
+      const tags = meta.tags;
+      if (Array.isArray(tags)) {
+        return tags.map((tag) => String(tag).trim()).filter(Boolean);
+      }
+      if (typeof tags === "string") {
+        return tags
+          .split(",")
+          .map((tag) => tag.trim())
+          .filter(Boolean);
+      }
+      return [];
+    }
+
+    function appendTags(target: HTMLElement, tags: string[]) {
+      if (tags.length === 0) return;
+      const list = document.createElement("ul");
+      list.className = "tag-list";
+      list.setAttribute("aria-label", "Tags");
+      for (const tag of tags) {
+        const item = document.createElement("li");
+        const label = document.createElement("span");
+        label.className = "tag";
+        label.textContent = tag;
+        item.append(label);
+        list.append(item);
+      }
+      target.append(list);
+    }
+
     input?.addEventListener("input", async (event) => {
+      const sequence = ++searchSequence;
       const query =
         event.target instanceof HTMLInputElement
           ? event.target.value.trim()
@@ -94,11 +126,14 @@ import BaseLayout from "../layouts/BaseLayout.astro";
         return;
       }
       const pagefind = await pagefindPromise;
+      if (sequence !== searchSequence) return;
       if (!pagefind) return;
       const search = await pagefind.search(query);
+      if (sequence !== searchSequence) return;
       const recordResults = [];
       for (const result of search.results) {
         const data = await result.data();
+        if (sequence !== searchSequence) return;
         const recordUrl = getRecordUrl(data.url);
         if (recordUrl) {
           recordResults.push({ ...data, url: recordUrl });
@@ -120,13 +155,16 @@ import BaseLayout from "../layouts/BaseLayout.astro";
         const href = getRecordUrl(data.url);
         if (!href) continue;
         link.setAttribute("href", href);
-        link.textContent = data.meta.title;
+        link.textContent = String(data.meta?.title ?? "Untitled record");
         heading.append(link);
 
+        const tags = getResultTags(data.meta ?? {});
         const excerpt = document.createElement("p");
         appendSafeExcerpt(excerpt, data.excerpt);
 
-        article.append(heading, excerpt);
+        article.append(heading);
+        appendTags(article, tags);
+        article.append(excerpt);
         results.appendChild(article);
       }
     });

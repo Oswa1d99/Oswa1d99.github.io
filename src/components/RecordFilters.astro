@@ -34,11 +34,15 @@ import { focusGroups, tagDefinitions } from "../config/tags";
   </label>
   <p class="meta" data-result-count></p>
 </form>
+<p class="empty-state record-filter-empty" data-filter-empty hidden>
+  No records matched these filters. Clear one filter or browse all records.
+</p>
 
 <script>
   const form = document.querySelector("[data-record-filters]");
   const cards = [...document.querySelectorAll("[data-record-card]")];
   const count = document.querySelector("[data-result-count]");
+  const empty = document.querySelector("[data-filter-empty]");
 
   function applyFilters() {
     if (!(form instanceof HTMLFormElement)) return;
@@ -75,6 +79,7 @@ import { focusGroups, tagDefinitions } from "../config/tags";
     if (count) {
       count.textContent = `${visible.length} record${visible.length === 1 ? "" : "s"}`;
     }
+    empty?.toggleAttribute("hidden", visible.length > 0);
   }
 
   form?.addEventListener("change", applyFilters);

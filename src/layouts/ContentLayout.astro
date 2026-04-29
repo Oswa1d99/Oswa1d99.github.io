@@ -1,6 +1,7 @@
 ---
 import BaseLayout from "./BaseLayout.astro";
 import TagList from "../components/TagList.astro";
+import { getTagLabel } from "../config/tags";
 import mermaidUrl from "mermaid/dist/mermaid.esm.min.mjs?url";
 
 interface Props {
@@ -12,12 +13,14 @@ interface Props {
 }
 
 const { title, description, date, tags = [], hasMermaid = false } = Astro.props;
+const tagLabels = tags.map((tag) => getTagLabel(tag)).join(", ");
+const mermaidPendingRuntime = `document.documentElement.setAttribute("data-mermaid-pending", "true");`;
 const mermaidRuntime = `
 const blocks = [...document.querySelectorAll('pre[data-language="mermaid"] > code')];
 if (blocks.length > 0) {
   import(${JSON.stringify(mermaidUrl)}).then(({ default: mermaid }) => {
     mermaid.initialize({ startOnLoad: false, securityLevel: "strict" });
-    blocks.forEach(async (block, index) => {
+    Promise.all(blocks.map(async (block, index) => {
       const source = block.textContent ?? "";
       const pre = block.parentElement;
       if (!pre) return;
@@ -31,14 +34,26 @@ if (blocks.length > 0) {
         pre.setAttribute("data-enhanced", "true");
       } catch {
         pre.removeAttribute("data-enhanced");
+        document.documentElement.removeAttribute("data-mermaid-pending");
+        throw new Error("Mermaid render failed");
       }
+    })).then(() => {
+      document.documentElement.removeAttribute("data-mermaid-pending");
+      document.documentElement.setAttribute("data-mermaid-ready", "true");
+    }).catch(() => {
+      document.documentElement.removeAttribute("data-mermaid-pending");
     });
+  }).catch(() => {
+    document.documentElement.removeAttribute("data-mermaid-pending");
   });
+} else {
+  document.documentElement.removeAttribute("data-mermaid-pending");
 }
 `;
 ---
 
 <BaseLayout title={title} description={description}>
+  {hasMermaid ? <script is:inline set:html={mermaidPendingRuntime} /> : null}
   <article class="reading-frame">
     <header>
       {
@@ -55,6 +70,13 @@ if (blocks.length > 0) {
       {tags.length > 0 ? <TagList tags={tags} /> : null}
     </header>
     <div class="content-body" data-pagefind-body>
+      {
+        tags.length > 0 ? (
+          <span class="visually-hidden" data-pagefind-meta="tags">
+            {tagLabels}
+          </span>
+        ) : null
+      }
       <slot />
     </div>
   </article>
