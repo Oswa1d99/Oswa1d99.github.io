@@ -1,13 +1,10 @@
 ---
-import { getCollection, render } from "astro:content";
+import { render } from "astro:content";
 import ContentLayout from "../../layouts/ContentLayout.astro";
+import { getPublicRecordStaticPaths } from "../../lib/content/graph";
 
 export async function getStaticPaths() {
-  const records = await getCollection("writing", (entry) => !entry.data.draft);
-  return records.map((record) => ({
-    params: { slug: record.id },
-    props: { record },
-  }));
+  return getPublicRecordStaticPaths();
 }
 
 const { record } = Astro.props;

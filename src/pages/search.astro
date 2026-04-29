@@ -21,8 +21,14 @@ import BaseLayout from "../layouts/BaseLayout.astro";
         return await import(/* @vite-ignore */ pagefindPath);
       } catch {
         if (status) {
-          status.innerHTML =
-            'Search is unavailable. <a href="/records/">Browse Records</a> instead.';
+          const fallbackLink = document.createElement("a");
+          fallbackLink.setAttribute("href", "/records/");
+          fallbackLink.textContent = "Browse Records";
+          status.replaceChildren(
+            "Search is unavailable. ",
+            fallbackLink,
+            " instead.",
+          );
         }
         return null;
       }
@@ -30,12 +36,49 @@ import BaseLayout from "../layouts/BaseLayout.astro";
 
     const pagefindPromise = loadPagefind();
 
-    function isRecordUrl(url: string) {
+    function getRecordUrl(url: string) {
       try {
-        const path = new URL(url, window.location.origin).pathname;
-        return path === "/records/" || path.startsWith("/records/");
+        const parsed = new URL(url, window.location.origin);
+        if (
+          parsed.origin === window.location.origin &&
+          (parsed.pathname === "/records/" ||
+            parsed.pathname.startsWith("/records/"))
+        ) {
+          return `${parsed.pathname}${parsed.search}${parsed.hash}`;
+        }
       } catch {
-        return false;
+        return null;
+      }
+      return null;
+    }
+
+    function appendSafeExcerpt(target: HTMLElement, excerpt: string) {
+      const template = document.createElement("template");
+      template.innerHTML = excerpt;
+
+      function appendSafeNode(node: Node, parent: HTMLElement) {
+        if (node.nodeType === Node.TEXT_NODE) {
+          parent.append(document.createTextNode(node.textContent ?? ""));
+          return;
+        }
+
+        if (
+          node instanceof HTMLElement &&
+          node.tagName.toLowerCase() === "mark"
+        ) {
+          const mark = document.createElement("mark");
+          mark.textContent = node.textContent ?? "";
+          parent.append(mark);
+          return;
+        }
+
+        for (const child of node.childNodes) {
+          appendSafeNode(child, parent);
+        }
+      }
+
+      for (const child of template.content.childNodes) {
+        appendSafeNode(child, target);
       }
     }
 
@@ -45,7 +88,7 @@ import BaseLayout from "../layouts/BaseLayout.astro";
           ? event.target.value.trim()
           : "";
       if (!results || !status) return;
-      results.innerHTML = "";
+      results.replaceChildren();
       if (!query) {
         status.textContent = "";
         return;
@@ -56,8 +99,9 @@ import BaseLayout from "../layouts/BaseLayout.astro";
       const recordResults = [];
       for (const result of search.results) {
         const data = await result.data();
-        if (isRecordUrl(data.url)) {
-          recordResults.push(data);
+        const recordUrl = getRecordUrl(data.url);
+        if (recordUrl) {
+          recordResults.push({ ...data, url: recordUrl });
         }
       }
       if (recordResults.length === 0) {
@@ -71,7 +115,18 @@ import BaseLayout from "../layouts/BaseLayout.astro";
       for (const data of recordResults) {
         const article = document.createElement("article");
         article.className = "record-card";
-        article.innerHTML = `<h2><a href="${data.url}">${data.meta.title}</a></h2><p>${data.excerpt}</p>`;
+        const heading = document.createElement("h2");
+        const link = document.createElement("a");
+        const href = getRecordUrl(data.url);
+        if (!href) continue;
+        link.setAttribute("href", href);
+        link.textContent = data.meta.title;
+        heading.append(link);
+
+        const excerpt = document.createElement("p");
+        appendSafeExcerpt(excerpt, data.excerpt);
+
+        article.append(heading, excerpt);
         results.appendChild(article);
       }
     });

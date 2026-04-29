@@ -1,10 +1,14 @@
 import type { CollectionEntry } from "astro:content";
 import { getTagLabel, tagDefinitions, type TagSlug } from "../../config/tags";
 
-type ReferenceLike = { collection: string; id: string };
+type ReferenceLike<Collection extends string = string> = {
+  collection: Collection;
+  id: string;
+};
 
 export type WritingEntryLike = {
   id: string;
+  body?: string;
   collection: "writing";
   data: {
     title: string;
@@ -13,8 +17,8 @@ export type WritingEntryLike = {
     updatedAt?: Date;
     draft: boolean;
     tags: string[];
-    series?: ReferenceLike;
-    relatedProjects: ReferenceLike[];
+    series?: ReferenceLike<"series">;
+    relatedProjects: ReferenceLike<"projects">[];
     language: "ko" | "en" | "mixed";
     featured: boolean;
     primaryLabel?: string;
@@ -23,6 +27,7 @@ export type WritingEntryLike = {
 
 export type ProjectEntryLike = {
   id: string;
+  body?: string;
   collection: "projects";
   data: {
     title: string;
@@ -35,12 +40,13 @@ export type ProjectEntryLike = {
     startedAt: Date;
     updatedAt: Date;
     tags: string[];
-    relatedWriting: ReferenceLike[];
+    relatedWriting: ReferenceLike<"writing">[];
   };
 };
 
 export type SeriesEntryLike = {
   id: string;
+  body?: string;
   collection: "series";
   data: {
     title: string;
@@ -177,6 +183,32 @@ export async function getAllBuildEntries() {
 export async function getAllSeries() {
   const { getCollection } = await import("astro:content");
   return (await getCollection("series")) as SeriesEntryLike[];
+}
+
+export async function getPublicRecordStaticPaths() {
+  const { getCollection } = await import("astro:content");
+  const entries = await getCollection("writing");
+  return prepareWritingEntries(entries as WritingEntryLike[]).map((record) => ({
+    params: { slug: record.id },
+    props: { record },
+  }));
+}
+
+export async function getBuildStaticPaths() {
+  const { getCollection } = await import("astro:content");
+  const entries = await getCollection("projects");
+  return getProjectsForBuild(entries as ProjectEntryLike[]).map((build) => ({
+    params: { slug: build.id },
+    props: { build },
+  }));
+}
+
+export async function getSeriesStaticPaths() {
+  const series = await getAllSeries();
+  return series.map((item) => ({
+    params: { slug: item.id },
+    props: { series: item },
+  }));
 }
 
 export async function getHomeContent() {

@@ -21,6 +21,16 @@ npm run lint
 
 The most important validation is that content schema and build checks catch broken frontmatter, invalid content references, and rendering failures.
 
+## Known Audit Caveat
+
+`npm audit --omit=dev --audit-level=moderate` is expected to fail while `mermaid@11.14.0` has no non-forcing fix for its transitive UUID advisory:
+
+```text
+mermaid > uuid
+```
+
+The Mermaid runtime is loaded only on content pages that contain a Mermaid block, initializes Mermaid with `securityLevel: "strict"`, and preserves the raw source fallback if rendering fails. Accept this temporarily for v1 rather than running `npm audit fix --force`, because the force path is outside the current Astro/Mermaid compatibility plan and would risk unrelated dependency churn. Revisit when Mermaid publishes a compatible patched dependency path.
+
 ## Content Graph Tests
 
 Add Vitest tests for the public Content Graph Interface in `src/lib/content/graph.ts`. Tests should verify observable behavior through the public Interface, not internal helper functions.

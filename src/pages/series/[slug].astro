@@ -1,16 +1,15 @@
 ---
-import { getCollection } from "astro:content";
 import BaseLayout from "../../layouts/BaseLayout.astro";
 import RecordList from "../../components/RecordList.astro";
 import EmptyState from "../../components/EmptyState.astro";
-import { getAllRecords, getRecordsForSeries } from "../../lib/content/graph";
+import {
+  getAllRecords,
+  getRecordsForSeries,
+  getSeriesStaticPaths,
+} from "../../lib/content/graph";
 
 export async function getStaticPaths() {
-  const series = await getCollection("series");
-  return series.map((item) => ({
-    params: { slug: item.id },
-    props: { series: item },
-  }));
+  return getSeriesStaticPaths();
 }
 
 const { series } = Astro.props;

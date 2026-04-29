@@ -1,13 +1,10 @@
 ---
-import { getCollection, render } from "astro:content";
+import { render } from "astro:content";
 import ContentLayout from "../../layouts/ContentLayout.astro";
+import { getBuildStaticPaths } from "../../lib/content/graph";
 
 export async function getStaticPaths() {
-  const builds = await getCollection("projects");
-  return builds.map((build) => ({
-    params: { slug: build.id },
-    props: { build },
-  }));
+  return getBuildStaticPaths();
 }
 
 const { build } = Astro.props;
