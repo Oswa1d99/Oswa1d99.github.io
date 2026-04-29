@@ -16,6 +16,10 @@ The core content model is:
 
 Use `CONTEXT.md` for canonical domain terms.
 
+Public IA uses the labels from `DESIGN.md`: Records, Build, About, and Search.
+`Writing` and `Projects` remain internal content model names unless `DESIGN.md`
+explicitly changes the public labels again.
+
 ## Module Map
 
 ### Content Graph Module
@@ -64,8 +68,8 @@ Files:
 
 - `src/layouts/ContentLayout.astro`
 - `src/components/content/**`
-- `src/pages/writing/[...slug].astro`
-- `src/pages/projects/[...slug].astro`
+- `src/pages/records/[...slug].astro`
+- `src/pages/build/[...slug].astro`
 - `astro.config.mjs`
 
 The Content Rendering Module owns how Markdown and optional MDX appear across Writing and Project detail pages.
@@ -150,7 +154,7 @@ The Deployment Module owns domain choice, GitHub Pages assumptions, Astro `site`
 
 Hosted search adapters, comments, analytics, CMS, full multilingual routing, and hosted demos are excluded from v1.
 
-Static search for local Writing discovery is allowed in v1. It should be treated as part of the Content Operations and Content Graph surface, not as an external search Adapter. Pagefind or an equivalent build-time static index may be used without adding a hosted search seam.
+Static search for local Records discovery is allowed in v1. It should be treated as part of the Content Operations and Content Graph surface, not as an external search Adapter. Pagefind or an equivalent build-time static index may be used without adding a hosted search seam.
 
 Do not introduce Adapter Interfaces for these capabilities until there are at least two real adapters, usually production and local/test. One adapter is a hypothetical seam. Two adapters make a seam real.
 
@@ -171,5 +175,5 @@ If a future change needs to violate one of these rules, update this document or 
 1. Foundation: create Astro, TypeScript, Site Identity, GitHub Pages config, Content Collections, Content Graph Interface, and Content Operations guide/fixtures.
 2. Graph verification: add Vitest coverage for Content Graph behavior before wiring every route.
 3. Rendering: add ContentLayout, Markdown typography, and the Mermaid Renderer Module.
-4. Routes and UI: assemble Home, Projects, Writing, Tags, Series, and About using existing Modules.
+4. Routes and UI: assemble Home, Records, Build, Search, Tags, Series, and About using existing Modules.
 5. Verification: run the checks in `docs/validation.md`.

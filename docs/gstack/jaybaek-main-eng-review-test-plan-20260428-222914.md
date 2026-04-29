@@ -6,19 +6,19 @@ Repo: Jay_Baek_Github_io
 
 ## Affected Pages/Routes
 
-- `/` — verify identity, role, featured Projects, featured Writing, and top navigation.
-- `/projects/` — verify project list, status badges, stack labels, related writing counts, and empty state if no visible projects exist.
-- `/projects/[slug]/` — verify project detail content shape, related Writing links, external links, and honest WIP status framing.
-- `/writing/` — verify featured entries, latest entries, tags, series links, and draft exclusion.
-- `/writing/[slug]/` — verify metadata, tags, series, related Projects, code blocks, images, and Mermaid diagrams.
+- `/` — verify identity, role, recent Records, one active Build thread, and top navigation.
+- `/build/` — verify build thread status, stack labels, related Records, and empty state if no visible build exists.
+- `/build/[slug]/` — verify build detail content shape, related Records links, external links, and honest WIP status framing if detail routes exist.
+- `/records/` — verify featured entries, latest entries, tags, series links, and draft exclusion.
+- `/records/[slug]/` — verify metadata, tags, series, related Build/Project links, code blocks, images, and Mermaid diagrams.
 - `/tags/[tag]/` — verify tag-filtered writing and project discovery uses the Content Graph output.
 - `/series/[slug]/` — verify series entries are ordered correctly and handle empty or draft-only series safely.
 
 ## Key Interactions To Verify
 
 - Header navigation works from Home and nested detail routes.
-- Related Project and Writing links resolve without 404s.
-- Tag links from writing/project cards open the correct tag route.
+- Related Build/Project and Record links resolve without 404s.
+- Tag links from Record/Build cards open the correct tag route.
 - Series links from writing detail open the correct series route.
 - GitHub/external links open the intended external targets.
 - Mermaid JavaScript loads only on pages containing Mermaid diagrams.
@@ -37,7 +37,7 @@ Repo: Jay_Baek_Github_io
 
 ## Critical Paths
 
-- Add a new Writing Markdown file and verify it appears in Writing, tag/series routes, and related Project areas when configured.
-- Add a new Project Markdown file and verify it appears in Projects and related Writing areas when configured.
+- Add a new Writing Markdown file and verify it appears in Records, tag/series routes, and related Build/Project areas when configured.
+- Add a new Project Markdown file and verify it appears in Build surfaces and related Records areas when configured.
 - Run `npm run test`, `npm run astro check`, and `npm run build`.
 - Deploy to GitHub Pages and run the deployed-site smoke checklist from the design spec.

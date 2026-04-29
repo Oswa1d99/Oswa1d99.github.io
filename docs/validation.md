@@ -28,8 +28,8 @@ Add Vitest tests for the public Content Graph Interface in `src/lib/content/grap
 Required coverage:
 
 - Draft Writing is excluded from production-visible results.
-- Featured Projects and Writing are ordered predictably.
-- Projects and Writing sort by the intended date fields.
+- Featured Records and Build entries are ordered predictably.
+- Projects and Writing collections sort by the intended date fields before presentation as Build and Records.
 - Tag index output is stable and rejects or reports unknown Tags.
 - Series pages receive entries in the intended order.
 - Related Project/Writing composition works through Astro collection references.
@@ -58,16 +58,22 @@ Required checks:
 - Search results show title, tags, and a trimmed body snippet when a match exists.
 - Empty search results use the exact copy from `DESIGN.md`.
 - Company work appears only as confidential-safe themes, not detailed project claims.
+- Public navigation uses `Records`, `Build`, and `About`, plus the search icon.
+- Home shows 3-4 recent Records and one Build thread, not a portfolio gallery.
+- Unknown linked tags fail validation; unknown direct tag URLs recover with a useful 404.
+- Mobile order follows identity, latest Records, current focus, Build, then About/contact.
+- Keyboard focus, active nav state, touch target size, and visited link color follow `DESIGN.md`.
 
 ## Route Smoke Checks
 
 Verify these routes:
 
 - `/`
-- `/projects/`
-- `/projects/[slug]/`
-- `/writing/`
-- `/writing/[slug]/`
+- `/build/`
+- `/build/[slug]/` if Build detail routes exist
+- `/records/`
+- `/records/[slug]/`
+- `/search/`
 - `/tags/[tag]/`
 - `/series/[slug]/`
 

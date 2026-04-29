@@ -11,9 +11,15 @@ This document is planning history. Stable decisions have been promoted into acti
 - `docs/content-guide.md` owns content authoring rules.
 - `docs/deployment.md` owns domain, GitHub Pages, Astro `site`, Astro `base`, canonical URL, and asset path assumptions.
 - `docs/validation.md` owns local checks, browser QA, route smoke checks, and deployment smoke checks.
-- `DESIGN.md` will own the visual design system after `/design-consultation` completes.
+- `DESIGN.md` owns the active visual and UI design system.
 
 If this document conflicts with an active Module document, use the active Module document and update or supersede the stale section here later.
+
+Known superseded assumptions:
+
+- Public navigation is `Records`, `Build`, and `About`, plus a header search icon. Older references to `Projects` and `Writing` as top-level navigation are planning history.
+- Search is included in v1 as a static `/search/` page.
+- Font and palette choices are no longer provisional. Use `DESIGN.md`.
 
 ## Summary
 
@@ -25,7 +31,7 @@ The v1 site is not a finished-product showcase. It is a structured portfolio and
 
 - Present Jay Baek as a practical AI Engineer who can frame real problems and build AI systems.
 - Keep growth visible through writing, build logs, technical notes, and project history.
-- Treat Projects and Writing as equal first-class surfaces.
+- Treat Records as the primary archive surface and Build as the focused applied proof surface.
 - Start Korean-first while making the most important hiring-facing surfaces readable in English.
 - Make routine updates possible through content files, not page or layout edits.
 - Keep the architecture easy for future coding agents to understand and extend.
@@ -34,7 +40,6 @@ The v1 site is not a finished-product showcase. It is a structured portfolio and
 
 - Full multilingual routing such as `/ko` and `/en`.
 - CMS integration.
-- Search.
 - Comments.
 - Newsletter.
 - Analytics dashboard.
@@ -69,7 +74,7 @@ This means:
 
 - typography and information hierarchy carry the design.
 - surfaces feel precise, calm, and maintained.
-- Projects and Writing look like evidence, not marketing claims.
+- Records and Build look like evidence, not marketing claims.
 - WIP work is framed through status, notes, and technical decisions.
 - decorative elements are used sparingly and only when they improve hierarchy.
 
@@ -134,7 +139,7 @@ Required UI rules:
 - Focus states must be visible and use `--color-focus`.
 - Buttons are only for commands. Navigation and content links should look like links.
 - Status badges use muted semantic colors and text labels, never color alone.
-- Project and Writing cards use small radius, quiet border, and no decorative icon circles.
+- Record and Build cards use small radius, quiet border, and no decorative icon circles.
 - Reading layouts should use a constrained text width around 68-76 characters.
 - Code blocks and Mermaid diagrams should be visually part of the article, not floating decorative panels.
 - Section headings should sit closer to the content they introduce than to the previous section.
@@ -144,9 +149,9 @@ Design system score target for v1: consistent and credible, not heavily branded.
 
 ### Typography And Palette Direction
 
-Final font and palette choices should be approved through `design-shotgun` once the design tool is configured. Until then, implementation should follow this provisional direction so v1 does not fall back to a generic default theme.
+Font and palette choices are now defined in `DESIGN.md`. The values below are retained as planning history only.
 
-Provisional typography direction:
+Active typography direction:
 
 - Body: a Korean-first sans with excellent mixed Korean/English readability, such as Pretendard or an equivalent high-quality Korean UI/text face.
 - Display: the same family with stronger weight, or a compatible editorial sans. Avoid decorative display faces.
@@ -154,7 +159,7 @@ Provisional typography direction:
 - Do not use `system-ui`, Inter, Roboto, Arial, or browser defaults as the primary design choice.
 - Mixed Korean/English lines should be tested in hero copy, card summaries, metadata, and article body text.
 
-Provisional palette direction:
+Active palette direction:
 
 ```text
 Role              | Direction
@@ -172,21 +177,15 @@ Maintained status | muted green
 Paused status     | muted amber or gray
 ```
 
-Design-shotgun should explore at least three distinct font/palette directions before final implementation:
-
-1. Editorial engineering workbench: Korean-first sans, ink text, quiet blue-green accent.
-2. Technical notebook: stronger mono presence, tighter metadata, high reading clarity.
-3. Premium builder portfolio: slightly more polished contrast and spacing, still no generic SaaS gradients.
-
-The approved direction should be recorded in the plan or `DESIGN.md` before implementation. If design-shotgun is unavailable, v1 may proceed with the provisional direction, but `/design-review` should run after implementation.
+Do not run another font/palette approval gate before implementation unless `DESIGN.md` changes.
 
 ## Information Architecture
 
 Top-level navigation:
 
 - Home
-- Projects
-- Writing
+- Records
+- Build
 - About
 
 ### Home
@@ -196,18 +195,18 @@ Home is the hiring-facing entry point. It should show:
 - Korean primary hero copy.
 - English supporting copy.
 - Current role and focus areas.
-- Featured Projects.
-- Featured Writing.
+- Recent Records.
+- One active Build thread.
 - Links to GitHub, LinkedIn, email, and other relevant profiles.
 
-Featured Projects and Featured Writing should have comparable visual weight.
+Recent Records should stay low-density on Home. Build should appear as one focused thread, not a gallery.
 
 Home should use a brand-led workbench hierarchy, not a generic hero plus card grid.
 
 ```text
 FIRST VIEWPORT
 ┌─────────────────────────────────────────────────────────────┐
-│ Jay Baek.dev                           Home Projects Writing About
+│ Jay Baek.dev                           Home Records Build About
 │                                                             │
 │ 실전 문제를 AI 시스템으로 풀어내는 엔지니어                 │
 │ Building practical AI systems and documenting the engineering behind them.
@@ -217,7 +216,7 @@ FIRST VIEWPORT
 │                                                             │
 │ [GitHub] [LinkedIn] [Email]                                  │
 │                                                             │
-│ Featured Projects                 Featured Writing           │
+│ Recent Records                    Build Thread               │
 │ ┌───────────────────────────┐     ┌────────────────────────┐ │
 │ │ status · problem · stack  │     │ title · tag · summary  │ │
 │ └───────────────────────────┘     └────────────────────────┘ │
@@ -228,7 +227,7 @@ The first five seconds should answer:
 
 1. Who is this? Jay Baek, AI Engineer.
 2. What does he do? Builds practical AI systems.
-3. What proves it? Projects and Writing, shown with equal weight.
+3. What proves it? Recent Records and one focused Build thread.
 
 Home should avoid:
 
@@ -584,8 +583,8 @@ Files:
 
 - `src/layouts/ContentLayout.astro`
 - `src/components/content/**`
-- `src/pages/writing/[...slug].astro`
-- `src/pages/projects/[...slug].astro`
+- `src/pages/records/[...slug].astro`
+- `src/pages/build/[...slug].astro`
 - `astro.config.mjs`
 
 The Content Rendering Module owns how Markdown and optional MDX appear.
@@ -709,7 +708,7 @@ VIEWPORT        | LAYOUT PRIORITY
 ----------------|---------------------------------------------------------------
 Mobile 320-767  | identity, primary nav, one featured item per section, readable prose
 Tablet 768-1023 | two-column featured areas only when space supports comfortable text
-Desktop 1024+   | brand-led first viewport with Projects and Writing in balanced columns
+Desktop 1024+   | brand-led first viewport with recent Records and one Build thread
 Wide 1440+      | constrain content width; do not stretch reading lines or cards endlessly
 ```
 
@@ -717,7 +716,7 @@ Mobile requirements:
 
 - Header must remain simple: brand visible, navigation reachable, no hidden critical links.
 - Touch targets must be at least 44px in height or width.
-- Home should show identity first, then one Featured Project and one Featured Writing before deeper lists.
+- Home should show identity first, then a small set of recent Records and one focused Build thread before deeper lists.
 - Project and Writing cards should avoid cramped metadata rows; wrap metadata onto separate lines when needed.
 - Reading pages should keep text width comfortable and avoid horizontal scrolling except inside code blocks.
 - Code blocks should support horizontal scrolling without breaking page layout.
@@ -776,9 +775,9 @@ Every user-facing content surface should define what the visitor sees when conte
 ```text
 FEATURE              | LOADING                  | EMPTY                                      | ERROR                         | SUCCESS                         | PARTIAL
 ---------------------|--------------------------|--------------------------------------------|-------------------------------|----------------------------------|-------------------------------
-Home featured areas  | Stable skeleton blocks   | "정리 중인 작업이 곧 추가됩니다" + links   | Hide broken item, keep page   | Featured Projects/Writing shown | Show whichever side has content
-Projects list        | Static build placeholder | Current build focus + GitHub/About links   | Build should fail on bad data | Project cards with status       | WIP projects show honest status
-Writing list         | Static build placeholder | Writing queue note + About/GitHub links    | Build should fail on bad data | Featured + latest writing       | Drafts hidden, published shown
+Home proof areas     | Stable skeleton blocks   | "정리 중인 작업이 곧 추가됩니다" + links   | Hide broken item, keep page   | Recent Records + Build shown    | Show whichever side has content
+Build surface        | Static build placeholder | Current build focus + GitHub/About links   | Build should fail on bad data | Build cards with status         | WIP builds show honest status
+Records list         | Static build placeholder | Writing queue note + About/GitHub links    | Build should fail on bad data | Featured + latest records       | Drafts hidden, published shown
 Project detail       | Static generated page    | Not applicable for generated routes        | 404 with route back to list   | Problem/Approach/Status/Notes   | Missing links omitted cleanly
 Writing detail       | Static generated page    | Not applicable for generated routes        | 404 with route back to list   | Metadata + readable article     | Missing related items omitted
 Mermaid diagram      | Reserved diagram space   | Source code fallback if JS unavailable     | Readable source + short note  | Rendered diagram                | Diagram loads after text safely
@@ -799,8 +798,8 @@ Home should be concise and scannable:
 
 - Hero identity.
 - Current role and focus.
-- Featured Projects.
-- Featured Writing.
+- Recent Records.
+- One active Build thread.
 - Clear profile links.
 
 ### Projects List
@@ -886,8 +885,9 @@ Internal links and asset paths must work with the chosen `base` configuration. T
 Deployed GitHub Pages smoke checklist:
 
 - Home route loads at the expected GitHub Pages URL.
-- Projects list route loads without a 404.
-- Writing list route loads without a 404.
+- Build route loads without a 404.
+- Records route loads without a 404.
+- Search route loads without a 404.
 - At least one Project detail route loads without a 404.
 - At least one Writing detail route loads without a 404.
 - Header navigation works from Home and from a nested detail route.
@@ -920,8 +920,8 @@ The implementation should add Vitest tests for the public Content Graph Interfac
 Required Content Graph test coverage:
 
 - draft writing is excluded from production-visible results.
-- featured Projects and Writing are ordered predictably.
-- Projects and Writing sort by the intended date fields.
+- featured Records and Build entries are ordered predictably.
+- Projects and Writing collections sort by the intended date fields before presentation as Build and Records.
 - tag index output is stable and rejects or reports unknown tags.
 - series pages receive entries in the intended order.
 - related Project/Writing composition works through Astro collection references.
@@ -938,15 +938,15 @@ Required rendering QA:
 ## Success Criteria
 
 - A visitor can understand within 30 seconds that Jay Baek is a practical AI Engineer building a public record of projects and writing.
-- Projects and Writing have comparable first-class presence.
-- A new writing Markdown file automatically appears in lists, detail routes, tag pages, series pages, and related content where configured.
-- A new project Markdown file automatically appears in project lists and detail routes.
+- Records is the primary archive surface and Build is the focused applied proof surface.
+- A new writing Markdown file automatically appears in Records, detail routes, tag pages, series pages, and related content where configured.
+- A new project Markdown file automatically appears in Build surfaces and detail routes where configured.
 - Projects and writing can reference each other through frontmatter.
 - WIP projects are presented honestly through status, notes, and related writing.
 - Routine content updates are limited to `src/content/**`.
 - Configuration updates are localized to `src/config/**`.
 - Page files do not duplicate content filtering, sorting, or relationship logic.
-- The architecture leaves room for search, comments, CMS, analytics, demos, and full multilingual routing without adding shallow pass-through Modules in v1.
+- The architecture leaves room for comments, CMS, analytics, demos, and full multilingual routing without adding shallow pass-through Modules in v1.
 
 ## Design Review Report
 
@@ -963,7 +963,7 @@ Design decisions added:
 - Visual direction is editorial engineering workbench.
 - Minimum design system tokens and UI rules are required before page-specific UI.
 - Responsive and accessibility requirements are explicit.
-- Final font and palette approval should happen through `design-shotgun` after designer setup.
+- Font and palette are governed by `DESIGN.md`.
 
 Design artifacts:
 
@@ -972,12 +972,12 @@ Design artifacts:
 
 NOT in scope for this review:
 
-- Final font and palette approval. Deferred to `design-shotgun`.
+- Final font and palette approval. Resolved by `DESIGN.md`.
 - Final motion style for Mermaid diagrams. Deferred to visual design exploration and implementation review.
 - Live visual QA. Deferred to `/design-review` after implementation.
 
 What already exists:
 
-- No `DESIGN.md` exists yet.
+- `DESIGN.md` now exists and is the active visual/UI source of truth.
 - No existing UI components or page patterns exist because the repo is still pre-implementation.
-- The design plan now acts as the temporary design source of truth until a `DESIGN.md` or approved mockup exists.
+- This historical design plan is superseded where it conflicts with `DESIGN.md`.

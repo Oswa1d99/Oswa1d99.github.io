@@ -60,10 +60,11 @@ Use this only if the repository is not `jaybaek.github.io`.
 After deployment, verify:
 
 - Home route loads at the expected URL.
-- Projects list route loads without a 404.
-- Writing list route loads without a 404.
-- At least one Project detail route loads without a 404.
-- At least one Writing detail route loads without a 404.
+- Build route loads without a 404.
+- Records route loads without a 404.
+- Search route loads without a 404.
+- At least one Build detail route loads without a 404 if detail routes exist.
+- At least one Record detail route loads without a 404.
 - Header navigation works from Home and from a nested detail route.
 - CSS and font assets load from the correct base path.
 - Images load from the correct base path.

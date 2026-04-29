@@ -18,20 +18,20 @@
 
 **Depends on / blocked by:** Wait until the site has enough source-controlled diagrams that manual regeneration becomes error-prone.
 
-## Font And Palette Approval
+## Resolved: Font And Palette Approval
 
-**Priority:** P1 design decision before visual implementation.
+**Status:** Resolved by `DESIGN.md` on 2026-04-29. This is no longer an implementation blocker.
 
 **Owner Module:** Site Identity Module and Content Rendering Module.
 
-**Effort:** human ~0.5 day / CC ~20-30 min after gstack designer setup.
+**Effort:** done.
 
-**Recommended order:** Run before implementing final CSS tokens and typography.
+**Recommended order:** Use `DESIGN.md` as the source of truth before making visual or UI decisions.
 
-**What:** Use `design-shotgun` to compare at least three font and palette directions for Jay Baek.dev.
+**What:** `DESIGN.md` now defines the active typography, palette, spacing, layout, navigation, and search rules.
 
-**Why:** The plan currently has a provisional typography and palette direction, but final visual approval needs mockups. Without this, the site may ship with a generic or untested visual system.
+**Why:** Implementation needs one stable design source of truth. Requiring another palette approval pass would conflict with the current project instruction to treat `DESIGN.md` as final for v1.
 
-**Context:** Explore Editorial engineering workbench, Technical notebook, and Premium builder portfolio directions. The approved direction should be recorded in the plan or `DESIGN.md`.
+**Context:** Earlier planning docs treated font and palette as provisional. That assumption is superseded. The active direction is Minimal Editorial Letter with Pretendard, IBM Plex Mono or JetBrains Mono, warm-neutral surfaces, and `#1F4F7A` as the primary accent.
 
-**Depends on / blocked by:** gstack designer setup, currently blocked by missing OpenAI API key for `/Users/jaybaek/gstack/design/dist/design`.
+**Depends on / blocked by:** none.

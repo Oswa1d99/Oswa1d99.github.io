@@ -41,7 +41,7 @@ The first viewport must answer:
 1. Who is this? Jay Baek, AI Engineer.
 2. What is his operating thesis? He is building toward practical AI systems through disciplined study, writing, and focused open-source work.
 3. What proves it? Recent Records, current focus areas, and one current Build Thread.
-4. How do I go deeper? Clear navigation to Projects, Writing, and About.
+4. How do I go deeper? Clear navigation to Records, Build, and About.
 
 The H1 should be the brand name, `Jay Baek.dev`. The supporting copy should carry the claim.
 
@@ -58,8 +58,8 @@ Building toward practical AI systems through study notes, engineering memos, and
 Top-level navigation:
 
 - Home
-- Notes
-- Open Source
+- Records
+- Build
 - About
 
 Header should include a persistent search icon at the far right. Do not add `Search` as another text navigation item next to About. The icon should be visually quiet but clearly clickable: a 32-36px icon button with a subtle inset or raised treatment, visible focus state, and accessible label such as `Search records`.
@@ -75,7 +75,7 @@ Home should not be a generic hero plus card grid. It should be a calm learning d
 
 Home should not include a full Work Themes section or a full note detail preview. Those belong on About and detail pages. Home should feel calm, not like every proof surface is competing for the first visit.
 
-Notes should read like engineering memos:
+Records should read like engineering memos:
 
 - Track.
 - Question.
@@ -95,7 +95,7 @@ Records should remain tag-first. Focus groups are shortcuts and editorial cues, 
 
 Search should be available from the persistent header icon. v1 should use a dedicated `/search/` page rather than an overlay. The search page should support full-text search across Writing titles, tags, descriptions, and body content. Home should not include a search input.
 
-Open Source should read like a build thread:
+Build should read like a focused open-source build thread:
 
 - What is being built.
 - Why it matters.

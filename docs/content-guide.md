@@ -16,6 +16,10 @@ Occasional copy, navigation, tag, or profile updates should touch:
 
 UI, routing, and content graph logic should change rarely during content work.
 
+Public IA follows `DESIGN.md`: Records is the public archive surface for Writing,
+and Build is the public open-source build-thread surface for Projects. Keep the
+internal collection names `writing` and `projects` unless the architecture changes.
+
 ## Projects
 
 Projects list open-source and work-in-progress engineering efforts. A Project does not need to be finished, but it must clearly show its problem, status, technical direction, and related Writing.
@@ -135,7 +139,7 @@ If a Current Focus group changes, old Writing entries should remain discoverable
 
 ## Search
 
-Search is a site-level reader aid for finding Writing by title, tags, description, and body text.
+Search is a site-level reader aid for finding Records by title, tags, description, and body text.
 
 v1 should use static search, not a hosted search backend. The preferred implementation is Pagefind or an equivalent static search index generated after the Astro build.
 
@@ -153,7 +157,7 @@ Search UI rules:
 
 Search indexing rules:
 
-- Include published Writing title, description, body, tags, Series label, and related Project names when public.
+- Include published Record title, description, body, tags, Series label, and related Build/Project names when public.
 - Exclude draft Writing.
 - Exclude repeated navigation and footer text.
 - Exclude confidential company details. Those should not exist in authored content.
@@ -164,7 +168,7 @@ Records filtering and site search are different features. Records filters help r
 
 Featured Content is a curated Project or Writing entry selected for high-visibility surfaces such as Home.
 
-Featured Projects and Featured Writing should have comparable visual weight. A missing featured item should not break Home; show whichever side has content.
+Home should show a small set of recent Records and one focused Build thread, following `DESIGN.md`. Missing featured content should not break Home; show the available evidence without filling the page with placeholders.
 
 ## Mermaid Diagrams
 
