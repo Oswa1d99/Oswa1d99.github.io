@@ -28,6 +28,19 @@ The public Content Graph Interface should prefer page-ready projections over raw
 
 Testing should exercise observable behavior through the public Interface with Content Fixtures.
 
+### Records Discovery Module
+
+Files:
+
+- `src/lib/content/records-discovery.ts`
+- `src/components/RecordFilters.astro`
+- `src/components/RecordList.astro`
+- `src/pages/records/index.astro`
+
+The Records Discovery Module owns page-local Records filtering and sorting. The pure content functions in `records-discovery.ts` define the filter and sort behavior, while `RecordList.astro` emits a localized JSON payload for browser behavior.
+
+Client-side filtering must consume that JSON payload and stable `data-record-card` ids. It should not infer behavior from visible `<time>` text, rendered tags, or card presentation attributes.
+
 ### Content Rendering Module
 
 Files:

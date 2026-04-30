@@ -5,8 +5,9 @@ import RecordList from "../../components/RecordList.astro";
 import EmptyState from "../../components/EmptyState.astro";
 import { emptyStates } from "../../config/site-content";
 import { getAllRecordListItems } from "../../lib/content/graph";
+import { sortRecordItems } from "../../lib/content/records-discovery";
 
-const records = await getAllRecordListItems();
+const records = sortRecordItems(await getAllRecordListItems(), "newest");
 ---
 
 <BaseLayout

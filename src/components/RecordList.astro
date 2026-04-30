@@ -16,12 +16,7 @@ const Heading = headingLevel;
 <ul class="record-list">
   {
     records.map((record) => (
-      <li
-        class="record-card"
-        data-record-card
-        data-tags={record.tags.join(" ")}
-        data-format={record.formatTag ?? ""}
-      >
+      <li class="record-card" data-record-card={record.id}>
         <p class="meta">
           <time datetime={record.publishedAt.toISOString()}>
             {record.publishedAt.toISOString().slice(0, 10)}
@@ -45,3 +40,16 @@ const Heading = headingLevel;
     ))
   }
 </ul>
+<script
+  is:inline
+  type="application/json"
+  data-record-discovery
+  set:html={JSON.stringify(
+    records.map((record) => ({
+      id: record.id,
+      tags: record.tags,
+      formatTag: record.formatTag ?? "",
+      publishedAt: record.publishedAt.toISOString(),
+    })),
+  )}
+/>

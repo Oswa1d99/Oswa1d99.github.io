@@ -106,8 +106,33 @@ const formatOptions = getTagsByRole("format");
 </p>
 
 <script>
+  import {
+    filterRecordItems,
+    sortRecordItems,
+    type RecordSort,
+  } from "../lib/content/records-discovery";
+
   const form = document.querySelector("[data-record-filters]");
-  const cards = [...document.querySelectorAll("[data-record-card]")];
+  const discoveryPayload = document.querySelector("[data-record-discovery]");
+  const records = discoveryPayload?.textContent
+    ? JSON.parse(discoveryPayload.textContent).map(
+        (record: {
+          id: string;
+          tags: string[];
+          formatTag: string;
+          publishedAt: string;
+        }) => ({
+          ...record,
+          publishedAt: new Date(record.publishedAt),
+        }),
+      )
+    : [];
+  const cardsById = new Map(
+    [...document.querySelectorAll("[data-record-card]")].map((card) => [
+      card.getAttribute("data-record-card"),
+      card,
+    ]),
+  );
   const count = document.querySelector("[data-result-count]");
   const empty = document.querySelector("[data-filter-empty]");
   const toggle = document.querySelector("[data-filter-toggle]");
@@ -226,30 +251,24 @@ const formatOptions = getTagsByRole("format");
       .filter(Boolean);
     const format = String(data.get("format") ?? "");
     const tag = String(data.get("tag") ?? "");
-    const sort = String(data.get("sort") ?? "newest");
-    const visible = [];
+    const sort = String(data.get("sort") ?? "newest") as RecordSort;
+    const visible = sortRecordItems(
+      filterRecordItems(records, { focus, format, tag }),
+      sort,
+    );
+    const visibleIds = new Set(visible.map((record) => record.id));
 
-    for (const card of cards) {
-      const tags = String(card.getAttribute("data-tags") ?? "").split(" ");
-      const matchesFocus =
-        focus.length === 0 || focus.some((tag) => tags.includes(tag));
-      const matchesFormat = !format || tags.includes(format);
-      const matchesTag = !tag || tags.includes(tag);
-      const shouldShow = matchesFocus && matchesFormat && matchesTag;
+    for (const [id, card] of cardsById) {
+      const shouldShow = id !== null && visibleIds.has(id);
       card.toggleAttribute("hidden", !shouldShow);
-      if (shouldShow) visible.push(card);
     }
 
     const list = document.querySelector(".record-list");
     if (list) {
-      const sorted = visible.sort((a, b) => {
-        const aTime = a.querySelector("time")?.getAttribute("datetime") ?? "";
-        const bTime = b.querySelector("time")?.getAttribute("datetime") ?? "";
-        return sort === "oldest"
-          ? aTime.localeCompare(bTime)
-          : bTime.localeCompare(aTime);
-      });
-      for (const item of sorted) list.appendChild(item);
+      for (const record of visible) {
+        const card = cardsById.get(record.id);
+        if (card) list.appendChild(card);
+      }
     }
 
     if (count) {
@@ -257,7 +276,10 @@ const formatOptions = getTagsByRole("format");
     }
     updateFilterSummary(form);
     syncUrl(form);
-    empty?.toggleAttribute("hidden", cards.length === 0 || visible.length > 0);
+    empty?.toggleAttribute(
+      "hidden",
+      cardsById.size === 0 || visible.length > 0,
+    );
   }
 
   if (form instanceof HTMLFormElement) {
