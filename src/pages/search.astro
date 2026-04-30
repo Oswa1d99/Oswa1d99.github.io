@@ -6,6 +6,13 @@ import { emptyStates, searchPage } from "../config/site-content";
 const recordsPath = getInternalPath("/records/");
 const buildPath = getInternalPath("/build/");
 const pagefindAssetPath = getPagefindAssetPath();
+const searchConfig = JSON.stringify({
+  searchPage,
+  emptyStates,
+  pagefindAssetPath,
+  recordsPath,
+  buildPath,
+}).replaceAll("<", "\\u003c");
 ---
 
 <BaseLayout title={searchPage.title} description={searchPage.description}>
@@ -38,29 +45,80 @@ const pagefindAssetPath = getPagefindAssetPath();
   </section>
   <script
     is:inline
-    define:vars={{
+    type="application/json"
+    id="search-config"
+    set:html={searchConfig}
+  />
+  <script>
+    import {
+      getResultDescription,
+      getResultTags,
+      getSearchableContentUrl as getSourceSearchableContentUrl,
+    } from "../lib/search/static-search";
+
+    type SearchPageCopy = {
+      fallbackAction: string;
+      fallbackSuffix: string;
+      statusSearching: string;
+      resultSingular: string;
+      resultPlural: string;
+      untitledResult: string;
+    };
+
+    type EmptyStateCopy = {
+      searchNoMatch: string;
+      searchUnavailable: string;
+    };
+
+    type SearchConfig = {
+      searchPage: SearchPageCopy;
+      emptyStates: EmptyStateCopy;
+      pagefindAssetPath: string;
+      recordsPath: string;
+      buildPath: string;
+    };
+
+    type PagefindData = {
+      url: string;
+      meta?: Record<string, unknown>;
+      excerpt?: string;
+    };
+
+    type PagefindResult = {
+      data(): Promise<PagefindData>;
+    };
+
+    type PagefindModule = {
+      search(query: string): Promise<{ results: PagefindResult[] }>;
+    };
+
+    const config = JSON.parse(
+      document.querySelector("#search-config")?.textContent ?? "{}",
+    ) as SearchConfig;
+    const {
       searchPage,
       emptyStates,
       pagefindAssetPath,
       recordsPath,
       buildPath,
-    }}
-  >
+    } = config;
     const input = document.querySelector("#record-search");
     const status = document.querySelector("[data-search-status]");
     const results = document.querySelector("[data-search-results]");
     const searchStart = document.querySelector("[data-search-start]");
     const clearButton = document.querySelector("[data-search-clear]");
     let searchSequence = 0;
-    let pagefindPromise = null;
+    let pagefindPromise: Promise<PagefindModule | null> | null = null;
 
-    async function loadPagefind() {
+    async function loadPagefind(): Promise<PagefindModule | null> {
       try {
         if (import.meta.env.DEV) {
           throw new Error("Pagefind is generated during production build.");
         }
         const pagefindPath = pagefindAssetPath;
-        return await import(/* @vite-ignore */ pagefindPath);
+        return (await import(
+          /* @vite-ignore */ pagefindPath
+        )) as PagefindModule;
       } catch {
         if (status) {
           const fallbackLink = document.createElement("a");
@@ -81,28 +139,31 @@ const pagefindAssetPath = getPagefindAssetPath();
       return pagefindPromise;
     }
 
-    function getSearchableContentUrl(url) {
+    function getSearchableContentUrl(url: string) {
       try {
         const parsed = new URL(url, window.location.origin);
+        const sourceUrl = getSourceSearchableContentUrl(
+          parsed.href,
+          window.location.origin,
+        );
+        if (sourceUrl?.startsWith("/records/")) {
+          return `${recordsPath}${sourceUrl.slice("/records/".length)}`;
+        }
+        if (sourceUrl?.startsWith("/build/")) {
+          return `${buildPath}${sourceUrl.slice("/build/".length)}`;
+        }
         if (parsed.origin !== window.location.origin) return null;
 
         const searchableSections = [
-          { sourcePath: "/records/", deployedPath: recordsPath },
-          { sourcePath: "/build/", deployedPath: buildPath },
+          { deployedPath: recordsPath },
+          { deployedPath: buildPath },
         ];
-        for (const { sourcePath, deployedPath } of searchableSections) {
+        for (const { deployedPath } of searchableSections) {
           if (
             parsed.pathname.startsWith(deployedPath) &&
             parsed.pathname !== deployedPath
           ) {
             return `${parsed.pathname}${parsed.search}${parsed.hash}`;
-          }
-
-          if (
-            parsed.pathname.startsWith(sourcePath) &&
-            parsed.pathname !== sourcePath
-          ) {
-            return `${deployedPath}${parsed.pathname.slice(sourcePath.length)}${parsed.search}${parsed.hash}`;
           }
         }
       } catch {
@@ -111,11 +172,11 @@ const pagefindAssetPath = getPagefindAssetPath();
       return null;
     }
 
-    function appendSafeExcerpt(target, excerpt) {
+    function appendSafeExcerpt(target: Element, excerpt: string) {
       const template = document.createElement("template");
       template.innerHTML = excerpt;
 
-      function appendSafeNode(node, parent) {
+      function appendSafeNode(node: ChildNode, parent: Element) {
         if (node.nodeType === Node.TEXT_NODE) {
           parent.append(document.createTextNode(node.textContent ?? ""));
           return;
@@ -141,21 +202,7 @@ const pagefindAssetPath = getPagefindAssetPath();
       }
     }
 
-    function getResultTags(meta) {
-      const tags = meta.tags;
-      if (Array.isArray(tags)) {
-        return tags.map((tag) => String(tag).trim()).filter(Boolean);
-      }
-      if (typeof tags === "string") {
-        return tags
-          .split(",")
-          .map((tag) => tag.trim())
-          .filter(Boolean);
-      }
-      return [];
-    }
-
-    function appendTags(target, tags) {
+    function appendTags(target: Element, tags: string[]) {
       if (tags.length === 0) return;
       const list = document.createElement("ul");
       list.className = "tag-list";
@@ -169,12 +216,6 @@ const pagefindAssetPath = getPagefindAssetPath();
         list.append(item);
       }
       target.append(list);
-    }
-
-    function getResultDescription(meta) {
-      return typeof meta.description === "string"
-        ? meta.description.trim()
-        : "";
     }
 
     clearButton?.addEventListener("click", () => {

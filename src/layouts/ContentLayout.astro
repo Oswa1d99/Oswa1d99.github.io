@@ -70,6 +70,7 @@ if (blocks.length > 0) {
       {tags.length > 0 ? <TagList tags={tags} /> : null}
     </header>
     <div class="content-body" data-pagefind-body>
+      <!-- Static Search reads these Pagefind metadata fields. Keep names in sync with src/lib/search/static-search.ts. -->
       {
         description ? (
           <span class="visually-hidden" data-pagefind-meta="description">

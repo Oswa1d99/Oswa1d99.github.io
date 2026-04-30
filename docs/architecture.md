@@ -129,7 +129,7 @@ The Deployment Module owns domain choice, GitHub Pages assumptions, Astro `site`
 
 Hosted search adapters, comments, analytics, CMS, full multilingual routing, and hosted demos are excluded from v1.
 
-Static search for local Records discovery is allowed in v1. It should be treated as part of the Content Operations and Content Graph surface, not as an external search Adapter. Pagefind or an equivalent build-time static index may be used without adding a hosted search seam.
+Static Search is a local Records discovery Module, not a hosted Adapter seam. It owns Pagefind result normalization, searchable route eligibility, safe excerpt rendering, and search copy. Pagefind remains a build-time implementation detail under ADR 0005.
 
 Do not introduce Adapter Interfaces for these capabilities until there are at least two real adapters, usually production and local/test. One adapter is a hypothetical seam. Two adapters make a seam real.
 
