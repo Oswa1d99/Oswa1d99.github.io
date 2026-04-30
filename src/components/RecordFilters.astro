@@ -116,13 +116,13 @@ const formatOptions = getTagsByRole("format");
   const filterTokens = document.querySelector("[data-filter-tokens]");
   const filterCount = document.querySelector("[data-filter-count]");
 
-  function getSelectedLabel(form, name) {
+  function getSelectedLabel(form: HTMLFormElement, name: string) {
     const field = form.elements.namedItem(name);
     if (!(field instanceof HTMLSelectElement)) return "";
     return field.selectedOptions[0]?.textContent?.trim() ?? "";
   }
 
-  function setFilterPanel(open) {
+  function setFilterPanel(open: boolean) {
     if (!(panel instanceof HTMLElement) || !(toggle instanceof HTMLElement)) {
       return;
     }
@@ -152,7 +152,7 @@ const formatOptions = getTagsByRole("format");
     }, 190);
   }
 
-  function syncUrl(form) {
+  function syncUrl(form: HTMLFormElement) {
     const data = new FormData(form);
     const params = new URLSearchParams(window.location.search);
 
@@ -172,7 +172,7 @@ const formatOptions = getTagsByRole("format");
     window.history.replaceState({}, "", nextUrl);
   }
 
-  function restoreUrlState(form) {
+  function restoreUrlState(form: HTMLFormElement) {
     const params = new URLSearchParams(window.location.search);
     for (const name of ["focus", "format", "tag", "sort"]) {
       const value = params.get(name);
@@ -183,7 +183,7 @@ const formatOptions = getTagsByRole("format");
     }
   }
 
-  function updateFilterSummary(form) {
+  function updateFilterSummary(form: HTMLFormElement) {
     const active = ["focus", "format", "tag"]
       .map((name) => {
         const field = form.elements.namedItem(name);
