@@ -3,6 +3,7 @@ import BaseLayout from "../layouts/BaseLayout.astro";
 import RecordList from "../components/RecordList.astro";
 import BuildSummary from "../components/BuildSummary.astro";
 import EmptyState from "../components/EmptyState.astro";
+import { homeHero } from "../config/home";
 import { site } from "../config/site";
 import { getAllRecords, getHomeContent } from "../lib/content/graph";
 
@@ -18,9 +19,18 @@ const relatedRecords = home.build
 <BaseLayout>
   <section class="page-frame home-hero">
     <p class="eyebrow">{site.role}</p>
-    <h1>{site.name}</h1>
-    <p>{site.thesisKo}</p>
-    <p>{site.thesisEn}</p>
+    <h1>{homeHero.brand}</h1>
+    <p>
+      {
+        homeHero.editorialClaim.map((line) => (
+          <>
+            {line}
+            <br />
+          </>
+        ))
+      }
+    </p>
+    <p><span aria-hidden="true">&gt;</span> {homeHero.promptThesis}</p>
     <p>{site.links.map((link) => <a href={link.href}>{link.label}</a>)}</p>
   </section>
   <section class="page-frame">

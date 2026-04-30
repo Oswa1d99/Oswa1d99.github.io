@@ -15,7 +15,8 @@
   --color-success: #2f6b4f;
   --color-warning: #8a5a12;
   --color-error: #9b2f2f;
-  --font-body: "Source Sans 3", "Apple SD Gothic Neo", "Noto Sans KR", sans-serif;
+  --font-body:
+    "Source Sans 3", "Apple SD Gothic Neo", "Noto Sans KR", sans-serif;
   --font-display: Newsreader, Georgia, serif;
   --font-mono: "IBM Plex Mono", "JetBrains Mono", ui-monospace, monospace;
   --space-2xs: 2px;
