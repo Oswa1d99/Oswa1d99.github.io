@@ -167,17 +167,21 @@ npm run validate
 
 Example:
 
-```ts
-const recordGroups = [
-  {
-    label: "LLM serving",
-    tags: ["llm", "serving", "inference", "latency", "evaluation"],
-  },
-  {
-    label: "System design",
-    tags: ["system-design", "queues", "workers", "scaling"],
-  },
-];
+```json
+{
+  "focusGroups": [
+    {
+      "label": "LLM serving",
+      "slug": "llm-serving",
+      "tags": ["llm-serving", "latency", "evaluation"]
+    },
+    {
+      "label": "System design",
+      "slug": "system-design",
+      "tags": ["system-design", "queues", "indexing", "network"]
+    }
+  ]
+}
 ```
 
 If a Current Focus group changes, old Writing entries should remain discoverable through their individual tags.

@@ -23,7 +23,7 @@ function buildTagDefinitions() {
   const definitions: Record<string, { label: string; role: TagRole }> = {};
   for (const tag of taxonomy.tags) {
     assertTagRole(tag.role);
-    if (definitions[tag.slug]) {
+    if (Object.hasOwn(definitions, tag.slug)) {
       throw new Error(`Duplicate Tag slug: ${tag.slug}`);
     }
     definitions[tag.slug] = { label: tag.label, role: tag.role };
@@ -31,13 +31,40 @@ function buildTagDefinitions() {
   return definitions;
 }
 
+function buildFocusGroups(
+  definitions: Record<string, { label: string; role: TagRole }>,
+) {
+  return taxonomy.focusGroups.map((group) => {
+    if (group.tags.length === 0) {
+      throw new Error(`Focus group has no Tags: ${group.slug}`);
+    }
+
+    for (const tag of group.tags) {
+      if (!Object.hasOwn(definitions, tag)) {
+        throw new Error(`Unknown Focus group Tag: ${group.slug} -> ${tag}`);
+      }
+    }
+
+    return {
+      label: group.label,
+      slug: group.slug,
+      tags: [...group.tags],
+    };
+  });
+}
+
 export const tagDefinitions = buildTagDefinitions();
 export type TagSlug = keyof typeof tagDefinitions;
 
 export const tagSlugs = Object.keys(tagDefinitions);
+if (tagSlugs.length === 0) {
+  throw new Error("Taxonomy must define at least one Tag");
+}
+
+const focusGroups = buildFocusGroups(tagDefinitions);
 
 export function hasKnownTag(tag: string): tag is TagSlug {
-  return tag in tagDefinitions;
+  return Object.hasOwn(tagDefinitions, tag);
 }
 
 export function getTagDefinition(tag: string) {
@@ -55,11 +82,7 @@ export function getTagsByRole(role: TagRole): TagOption[] {
 }
 
 export function getFocusGroups(): FocusGroup[] {
-  return taxonomy.focusGroups.map((group) => ({
-    label: group.label,
-    slug: group.slug,
-    tags: [...group.tags],
-  }));
+  return focusGroups.map((group) => ({ ...group, tags: [...group.tags] }));
 }
 
 export function getPrimaryFormatTag(tags: readonly string[]) {

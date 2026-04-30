@@ -13,6 +13,7 @@ describe("taxonomy", () => {
   it("answers tag facts through the taxonomy interface", () => {
     expect(hasKnownTag("study-note")).toBe(true);
     expect(hasKnownTag("unknown")).toBe(false);
+    expect(hasKnownTag("toString")).toBe(false);
     expect(getTagDefinition("build-log")).toEqual({
       label: "Build log",
       role: "format",
@@ -33,6 +34,12 @@ describe("taxonomy", () => {
       slug: "llm-serving",
       tags: ["llm-serving", "latency", "evaluation"],
     });
+  });
+
+  it("only exposes known tags in focus groups", () => {
+    for (const group of getFocusGroups()) {
+      expect(group.tags.every(hasKnownTag)).toBe(true);
+    }
   });
 
   it("derives a record format tag from taxonomy roles", () => {
