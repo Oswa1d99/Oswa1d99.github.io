@@ -354,7 +354,7 @@ h2 {
   margin-top: calc(var(--space-xl) * -1);
 }
 
-.page-frame > * + *,
+main .page-frame > * + *,
 .records-frame > * + *,
 .reading-frame > * + * {
   margin-top: var(--space-md);
