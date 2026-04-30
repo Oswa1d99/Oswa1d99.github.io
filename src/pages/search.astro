@@ -1,25 +1,22 @@
 ---
 import BaseLayout from "../layouts/BaseLayout.astro";
+import { emptyStates, searchPage } from "../config/site-content";
 ---
 
-<BaseLayout
-  title="Search"
-  description="Search published Records and Build notes."
->
+<BaseLayout title={searchPage.title} description={searchPage.description}>
   <section class="records-frame search-page">
-    <p class="eyebrow">Search utility</p>
-    <h1>Search the public record</h1>
+    <p class="eyebrow">{searchPage.eyebrow}</p>
+    <h1>{searchPage.heading}</h1>
     <p class="search-page__intro">
-      Find records and build notes by title, tag, or excerpt. For browsing,
-      start with the full archive.
+      {searchPage.intro}
     </p>
     <div class="search-control">
-      <label for="record-search">Search term</label>
+      <label for="record-search">{searchPage.label}</label>
       <div class="search-input-row">
         <span class="prompt-marker" aria-hidden="true">&gt;</span>
         <input id="record-search" type="search" autocomplete="off" />
         <button class="search-clear" type="button" data-search-clear hidden>
-          Clear
+          {searchPage.clear}
         </button>
       </div>
     </div>
@@ -29,19 +26,19 @@ import BaseLayout from "../layouts/BaseLayout.astro";
       aria-label="Search starting points"
       data-search-start
     >
-      <p class="meta">Suggested path</p>
-      <a href="/records/">Browse all Records</a>
+      <p class="meta">{searchPage.suggestedPathLabel}</p>
+      <a href="/records/">{searchPage.browseRecords}</a>
     </nav>
     <div class="search-results" data-search-results></div>
   </section>
-  <script>
+  <script define:vars={{ searchPage, emptyStates }}>
     const input = document.querySelector("#record-search");
     const status = document.querySelector("[data-search-status]");
     const results = document.querySelector("[data-search-results]");
     const searchStart = document.querySelector("[data-search-start]");
     const clearButton = document.querySelector("[data-search-clear]");
     let searchSequence = 0;
-    let pagefindPromise: Promise<Record<string, any> | null> | null = null;
+    let pagefindPromise = null;
 
     async function loadPagefind() {
       try {
@@ -54,9 +51,9 @@ import BaseLayout from "../layouts/BaseLayout.astro";
         if (status) {
           const fallbackLink = document.createElement("a");
           fallbackLink.setAttribute("href", "/records/");
-          fallbackLink.textContent = "Browse Records";
+          fallbackLink.textContent = searchPage.fallbackAction;
           status.replaceChildren(
-            "Search is unavailable. ",
+            `${emptyStates.searchUnavailable} `,
             fallbackLink,
             " instead.",
           );
@@ -70,7 +67,7 @@ import BaseLayout from "../layouts/BaseLayout.astro";
       return pagefindPromise;
     }
 
-    function getSearchableContentUrl(url: string) {
+    function getSearchableContentUrl(url) {
       try {
         const parsed = new URL(url, window.location.origin);
         const isRecordDetail =
@@ -91,11 +88,11 @@ import BaseLayout from "../layouts/BaseLayout.astro";
       return null;
     }
 
-    function appendSafeExcerpt(target: HTMLElement, excerpt: string) {
+    function appendSafeExcerpt(target, excerpt) {
       const template = document.createElement("template");
       template.innerHTML = excerpt;
 
-      function appendSafeNode(node: Node, parent: HTMLElement) {
+      function appendSafeNode(node, parent) {
         if (node.nodeType === Node.TEXT_NODE) {
           parent.append(document.createTextNode(node.textContent ?? ""));
           return;
@@ -121,7 +118,7 @@ import BaseLayout from "../layouts/BaseLayout.astro";
       }
     }
 
-    function getResultTags(meta: Record<string, unknown>) {
+    function getResultTags(meta) {
       const tags = meta.tags;
       if (Array.isArray(tags)) {
         return tags.map((tag) => String(tag).trim()).filter(Boolean);
@@ -135,7 +132,7 @@ import BaseLayout from "../layouts/BaseLayout.astro";
       return [];
     }
 
-    function appendTags(target: HTMLElement, tags: string[]) {
+    function appendTags(target, tags) {
       if (tags.length === 0) return;
       const list = document.createElement("ul");
       list.className = "tag-list";
@@ -151,7 +148,7 @@ import BaseLayout from "../layouts/BaseLayout.astro";
       target.append(list);
     }
 
-    function getResultDescription(meta: Record<string, unknown>) {
+    function getResultDescription(meta) {
       return typeof meta.description === "string"
         ? meta.description.trim()
         : "";
@@ -179,7 +176,7 @@ import BaseLayout from "../layouts/BaseLayout.astro";
         return;
       }
       searchStart?.setAttribute("hidden", "");
-      status.textContent = "Searching…";
+      status.textContent = searchPage.statusSearching;
       const pagefind = await getPagefind();
       if (sequence !== searchSequence) return;
       if (!pagefind) return;
@@ -195,13 +192,14 @@ import BaseLayout from "../layouts/BaseLayout.astro";
         }
       }
       if (recordResults.length === 0) {
-        status.textContent =
-          "No records or build notes matched this search. Try a broader term.";
+        status.textContent = emptyStates.searchNoMatch;
         return;
       }
-      status.textContent = `${recordResults.length} result${
-        recordResults.length === 1 ? "" : "s"
-      }`;
+      const resultLabel =
+        recordResults.length === 1
+          ? searchPage.resultSingular
+          : searchPage.resultPlural;
+      status.textContent = `${recordResults.length} ${resultLabel}`;
       for (const data of recordResults) {
         const article = document.createElement("article");
         article.className = "record-card";
@@ -210,7 +208,9 @@ import BaseLayout from "../layouts/BaseLayout.astro";
         const href = getSearchableContentUrl(data.url);
         if (!href) continue;
         link.setAttribute("href", href);
-        link.textContent = String(data.meta?.title ?? "Untitled record");
+        link.textContent = String(
+          data.meta?.title ?? searchPage.untitledResult,
+        );
         heading.append(link);
 
         const tags = getResultTags(data.meta ?? {});

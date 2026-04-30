@@ -7,6 +7,7 @@ import {
   site,
   socialLinks,
 } from "./site";
+import { siteContent } from "./site-content";
 import { deployment } from "../../deployment.config.mjs";
 
 describe("site identity", () => {
@@ -31,5 +32,15 @@ describe("site identity", () => {
   it("uses the active GitHub Pages origin", () => {
     expect(site.url).toBe(deployment.site);
     expect(site.url).toBe("https://oswa1d99.github.io");
+  });
+
+  it("keeps editable UI text in the site content authoring surface", () => {
+    expect(siteContent.homeHero.promptThesis).toBe(
+      "public technical record, kept honest by status.",
+    );
+    expect(siteContent.emptyStates.searchNoMatch).toBe(
+      "No records matched this search. Try a broader term.",
+    );
+    expect(siteContent.searchPage.clear).toBe("Clear");
   });
 });

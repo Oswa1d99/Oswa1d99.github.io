@@ -1,0 +1,124 @@
+{
+  "site": {
+    "name": "Jay Baek.dev",
+    "title": "Jay Baek.dev",
+    "description": "A learning-forward engineering dossier for practical AI systems, study notes, engineering memos, and one focused build thread.",
+    "author": "Jay Baek",
+    "role": "AI Engineer"
+  },
+  "navigation": [
+    { "label": "Records", "href": "/records/" },
+    { "label": "Build", "href": "/build/" },
+    { "label": "About", "href": "/about/" }
+  ],
+  "socialLinks": [{ "label": "GitHub", "href": "https://github.com/Oswa1d99" }],
+  "homeHero": {
+    "brand": "Jay Baek.dev",
+    "editorialClaim": ["Practical AI systems,", "edited into evidence."],
+    "promptThesis": "public technical record, kept honest by status."
+  },
+  "aboutPage": {
+    "title": "About",
+    "description": "Professional context, contact, and confidential-safe work themes.",
+    "eyebrow": "professional context",
+    "intro": [
+      "Jay Baek is an AI Engineer building practical AI systems through disciplined study, technical writing, and focused public build work.",
+      "This site is a public surface for evidence: records, build notes, and confidential-safe themes from real engineering practice."
+    ],
+    "context": {
+      "heading": "Context",
+      "rows": [
+        { "label": "Role", "value": "AI Engineer" },
+        {
+          "label": "Public surface",
+          "value": "Records, build notes, and technical memos"
+        },
+        {
+          "label": "Private boundary",
+          "value": "Company work stays theme-level only"
+        }
+      ]
+    },
+    "workThemes": {
+      "heading": "Work themes",
+      "intro": "Company work is described here only by theme. Internal project details stay private.",
+      "items": [
+        {
+          "label": "AI systems",
+          "description": "Applied systems, evaluation, reliability, and delivery."
+        },
+        {
+          "label": "Product constraints",
+          "description": "Latency, UX, operations, maintainability, and tradeoffs."
+        },
+        {
+          "label": "Automation",
+          "description": "Practical workflows that survive contact with real use."
+        }
+      ]
+    },
+    "contact": {
+      "heading": "Contact",
+      "intro": "The best public starting point is GitHub."
+    }
+  },
+  "footer": {
+    "summary": "Jay Baek.dev keeps a public record of study, engineering memos, and focused build work."
+  },
+  "emptyStates": {
+    "homeNoProof": {
+      "title": "Public proof is being organized",
+      "message": "Read About for context or open GitHub for current public work.",
+      "href": "/about/",
+      "action": "Read About"
+    },
+    "recordsNoPublished": {
+      "title": "Records are being organized",
+      "message": "No published records are in this view yet. Browse About for context.",
+      "href": "/about/",
+      "action": "Read About"
+    },
+    "buildNoPublicThread": {
+      "title": "No public build thread is ready yet",
+      "message": "Start with Records or GitHub.",
+      "href": "/records/",
+      "action": "Browse Records"
+    },
+    "tagNoRecords": {
+      "title": "No published records are in this view yet",
+      "message": "Browse all records.",
+      "href": "/records/",
+      "action": "Browse Records"
+    },
+    "seriesNoRecords": {
+      "title": "No published records are in this series yet",
+      "message": "Browse all records.",
+      "href": "/records/",
+      "action": "Browse Records"
+    },
+    "recordFilterNoMatch": "No records matched these filters. Clear one filter or browse all records.",
+    "searchNoMatch": "No records matched this search. Try a broader term.",
+    "searchUnavailable": "Search is unavailable.",
+    "pageNotFound": {
+      "title": "Page not found",
+      "description": "This page is not available.",
+      "message": "This route does not have a published page. Browse Records or return Home."
+    }
+  },
+  "searchPage": {
+    "title": "Search",
+    "description": "Search published Records and Build notes.",
+    "eyebrow": "Search utility",
+    "heading": "Search the public record",
+    "intro": "Find records and build notes by title, tag, or excerpt. For browsing, start with the full archive.",
+    "label": "Search term",
+    "clear": "Clear",
+    "suggestedPathLabel": "Suggested path",
+    "browseRecords": "Browse all Records",
+    "statusSearching": "Searching…",
+    "fallbackAction": "Browse Records",
+    "resultSingular": "result",
+    "resultPlural": "results",
+    "untitledResult": "Untitled record"
+  }
+}

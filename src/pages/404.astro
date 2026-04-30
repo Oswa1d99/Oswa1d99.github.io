@@ -1,12 +1,16 @@
 ---
 import BaseLayout from "../layouts/BaseLayout.astro";
+import { emptyStates } from "../config/site-content";
 ---
 
-<BaseLayout title="Page not found" description="This page is not available.">
+<BaseLayout
+  title={emptyStates.pageNotFound.title}
+  description={emptyStates.pageNotFound.description}
+>
   <section class="reading-frame">
-    <h1>Page not found</h1>
+    <h1>{emptyStates.pageNotFound.title}</h1>
     <p>
-      This route does not have a published page. Browse Records or return Home.
+      {emptyStates.pageNotFound.message}
     </p>
     <p><a href="/records/">Browse Records</a> / <a href="/">Home</a></p>
   </section>

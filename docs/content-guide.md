@@ -9,10 +9,30 @@ Routine content updates should usually touch only:
 - `src/content/series/**`
 - `docs/content-templates/**` as copyable starting points, not published content.
 
-Occasional copy, navigation, tag, or profile updates should touch:
+Occasional tag updates should touch:
 
-- `src/config/site.ts`
 - `src/config/tags.ts`
+
+## Editing UI Text
+
+Editable site copy lives in `src/config/site-content.json`.
+
+Use this file for:
+
+- Home hero copy.
+- Header navigation labels.
+- About page copy.
+- Footer copy.
+- Empty state copy.
+- Search page labels and messages.
+
+Do not edit route, layout, or component files just to change words on the page. Those files should render the authoring data.
+
+After editing `src/config/site-content.json`, run:
+
+```bash
+npm run validate
+```
 
 UI, routing, and content graph logic should change rarely during content work.
 
