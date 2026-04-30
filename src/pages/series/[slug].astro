@@ -1,0 +1,35 @@
+---
+import BaseLayout from "../../layouts/BaseLayout.astro";
+import RecordList from "../../components/RecordList.astro";
+import EmptyState from "../../components/EmptyState.astro";
+import {
+  getSeriesPageContent,
+  getSeriesStaticPaths,
+} from "../../lib/content/graph";
+
+export async function getStaticPaths() {
+  return getSeriesStaticPaths();
+}
+
+const { series } = Astro.props;
+const seriesView = await getSeriesPageContent(series.id);
+---
+
+<BaseLayout title={series.data.title} description={series.data.description}>
+  <section class="records-frame">
+    <h1>{series.data.title}</h1>
+    <p>{series.data.description}</p>
+    {
+      seriesView.records.length > 0 ? (
+        <RecordList records={seriesView.records} />
+      ) : (
+        <EmptyState
+          title="No published records are in this series yet"
+          message="Browse all records."
+          href="/records/"
+          action="Browse Records"
+        />
+      )
+    }
+  </section>
+</BaseLayout>

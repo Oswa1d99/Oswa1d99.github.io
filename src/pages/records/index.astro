@@ -1,0 +1,34 @@
+---
+import BaseLayout from "../../layouts/BaseLayout.astro";
+import RecordFilters from "../../components/RecordFilters.astro";
+import RecordList from "../../components/RecordList.astro";
+import EmptyState from "../../components/EmptyState.astro";
+import { getAllRecords } from "../../lib/content/graph";
+
+const records = await getAllRecords();
+---
+
+<BaseLayout
+  title="Records"
+  description="Writing, study notes, engineering memos, project logs, and reflections."
+>
+  <section class="records-frame">
+    <h1>Records</h1>
+    <p>
+      Writing, study notes, engineering memos, project logs, and reflections.
+    </p>
+    <RecordFilters />
+    {
+      records.length > 0 ? (
+        <RecordList records={records} />
+      ) : (
+        <EmptyState
+          title="Records are being organized"
+          message="No published records are in this view yet. Browse About for context."
+          href="/about/"
+          action="Read About"
+        />
+      )
+    }
+  </section>
+</BaseLayout>

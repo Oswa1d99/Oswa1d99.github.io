@@ -1,0 +1,47 @@
+---
+import TagList from "./TagList.astro";
+import { getPrimaryFormatTag } from "../config/tags";
+import type { WritingEntryLike } from "../lib/content/graph";
+
+interface Props {
+  records: WritingEntryLike[];
+  headingLevel?: "h2" | "h3";
+  tagLimit?: number;
+}
+
+const { records, headingLevel = "h2", tagLimit } = Astro.props;
+const Heading = headingLevel;
+---
+
+<ul class="record-list">
+  {
+    records.map((record) => (
+      <li
+        class="record-card"
+        data-record-card
+        data-tags={record.data.tags.join(" ")}
+        data-format={getPrimaryFormatTag(record.data.tags) ?? ""}
+      >
+        <p class="meta">
+          <time datetime={record.data.publishedAt.toISOString()}>
+            {record.data.publishedAt.toISOString().slice(0, 10)}
+          </time>
+          {record.data.primaryLabel ? ` / ${record.data.primaryLabel}` : ""}
+        </p>
+        <Heading>
+          <a href={`/records/${record.id}/`}>{record.data.title}</a>
+        </Heading>
+        <p>{record.data.description}</p>
+        {tagLimit === undefined || tagLimit > 0 ? (
+          <TagList
+            tags={
+              tagLimit === undefined
+                ? record.data.tags
+                : record.data.tags.slice(0, tagLimit)
+            }
+          />
+        ) : null}
+      </li>
+    ))
+  }
+</ul>

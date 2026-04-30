@@ -1,0 +1,233 @@
+---
+import BaseLayout from "../layouts/BaseLayout.astro";
+---
+
+<BaseLayout
+  title="Search"
+  description="Search published Records and Build notes."
+>
+  <section class="records-frame search-page">
+    <p class="eyebrow">Search utility</p>
+    <h1>Search the public record</h1>
+    <p class="search-page__intro">
+      Find records and build notes by title, tag, or excerpt. For browsing,
+      start with the full archive.
+    </p>
+    <div class="search-control">
+      <label for="record-search">Search term</label>
+      <div class="search-input-row">
+        <span class="prompt-marker" aria-hidden="true">&gt;</span>
+        <input id="record-search" type="search" autocomplete="off" />
+        <button class="search-clear" type="button" data-search-clear hidden>
+          Clear
+        </button>
+      </div>
+    </div>
+    <p class="search-status" data-search-status></p>
+    <nav
+      class="search-start"
+      aria-label="Search starting points"
+      data-search-start
+    >
+      <p class="meta">Suggested path</p>
+      <a href="/records/">Browse all Records</a>
+    </nav>
+    <div class="search-results" data-search-results></div>
+  </section>
+  <script>
+    const input = document.querySelector("#record-search");
+    const status = document.querySelector("[data-search-status]");
+    const results = document.querySelector("[data-search-results]");
+    const searchStart = document.querySelector("[data-search-start]");
+    const clearButton = document.querySelector("[data-search-clear]");
+    let searchSequence = 0;
+    let pagefindPromise: Promise<Record<string, any> | null> | null = null;
+
+    async function loadPagefind() {
+      try {
+        if (import.meta.env.DEV) {
+          throw new Error("Pagefind is generated during production build.");
+        }
+        const pagefindPath = "/pagefind/pagefind.js";
+        return await import(/* @vite-ignore */ pagefindPath);
+      } catch {
+        if (status) {
+          const fallbackLink = document.createElement("a");
+          fallbackLink.setAttribute("href", "/records/");
+          fallbackLink.textContent = "Browse Records";
+          status.replaceChildren(
+            "Search is unavailable. ",
+            fallbackLink,
+            " instead.",
+          );
+        }
+        return null;
+      }
+    }
+
+    function getPagefind() {
+      pagefindPromise = pagefindPromise ?? loadPagefind();
+      return pagefindPromise;
+    }
+
+    function getSearchableContentUrl(url: string) {
+      try {
+        const parsed = new URL(url, window.location.origin);
+        const isRecordDetail =
+          parsed.pathname.startsWith("/records/") &&
+          parsed.pathname !== "/records/";
+        const isBuildDetail =
+          parsed.pathname.startsWith("/build/") &&
+          parsed.pathname !== "/build/";
+        if (
+          parsed.origin === window.location.origin &&
+          (isRecordDetail || isBuildDetail)
+        ) {
+          return `${parsed.pathname}${parsed.search}${parsed.hash}`;
+        }
+      } catch {
+        return null;
+      }
+      return null;
+    }
+
+    function appendSafeExcerpt(target: HTMLElement, excerpt: string) {
+      const template = document.createElement("template");
+      template.innerHTML = excerpt;
+
+      function appendSafeNode(node: Node, parent: HTMLElement) {
+        if (node.nodeType === Node.TEXT_NODE) {
+          parent.append(document.createTextNode(node.textContent ?? ""));
+          return;
+        }
+
+        if (
+          node instanceof HTMLElement &&
+          node.tagName.toLowerCase() === "mark"
+        ) {
+          const mark = document.createElement("mark");
+          mark.textContent = node.textContent ?? "";
+          parent.append(mark);
+          return;
+        }
+
+        for (const child of node.childNodes) {
+          appendSafeNode(child, parent);
+        }
+      }
+
+      for (const child of template.content.childNodes) {
+        appendSafeNode(child, target);
+      }
+    }
+
+    function getResultTags(meta: Record<string, unknown>) {
+      const tags = meta.tags;
+      if (Array.isArray(tags)) {
+        return tags.map((tag) => String(tag).trim()).filter(Boolean);
+      }
+      if (typeof tags === "string") {
+        return tags
+          .split(",")
+          .map((tag) => tag.trim())
+          .filter(Boolean);
+      }
+      return [];
+    }
+
+    function appendTags(target: HTMLElement, tags: string[]) {
+      if (tags.length === 0) return;
+      const list = document.createElement("ul");
+      list.className = "tag-list";
+      list.setAttribute("aria-label", "Tags");
+      for (const tag of tags) {
+        const item = document.createElement("li");
+        const label = document.createElement("span");
+        label.className = "tag";
+        label.textContent = tag;
+        item.append(label);
+        list.append(item);
+      }
+      target.append(list);
+    }
+
+    function getResultDescription(meta: Record<string, unknown>) {
+      return typeof meta.description === "string"
+        ? meta.description.trim()
+        : "";
+    }
+
+    clearButton?.addEventListener("click", () => {
+      if (!(input instanceof HTMLInputElement)) return;
+      input.value = "";
+      input.dispatchEvent(new Event("input", { bubbles: true }));
+      input.focus();
+    });
+
+    input?.addEventListener("input", async (event) => {
+      const sequence = ++searchSequence;
+      const query =
+        event.target instanceof HTMLInputElement
+          ? event.target.value.trim()
+          : "";
+      if (!results || !status) return;
+      results.replaceChildren();
+      clearButton?.toggleAttribute("hidden", !query);
+      if (!query) {
+        status.textContent = "";
+        searchStart?.removeAttribute("hidden");
+        return;
+      }
+      searchStart?.setAttribute("hidden", "");
+      status.textContent = "Searching…";
+      const pagefind = await getPagefind();
+      if (sequence !== searchSequence) return;
+      if (!pagefind) return;
+      const search = await pagefind.search(query);
+      if (sequence !== searchSequence) return;
+      const recordResults = [];
+      for (const result of search.results) {
+        const data = await result.data();
+        if (sequence !== searchSequence) return;
+        const contentUrl = getSearchableContentUrl(data.url);
+        if (contentUrl) {
+          recordResults.push({ ...data, url: contentUrl });
+        }
+      }
+      if (recordResults.length === 0) {
+        status.textContent =
+          "No records or build notes matched this search. Try a broader term.";
+        return;
+      }
+      status.textContent = `${recordResults.length} result${
+        recordResults.length === 1 ? "" : "s"
+      }`;
+      for (const data of recordResults) {
+        const article = document.createElement("article");
+        article.className = "record-card";
+        const heading = document.createElement("h2");
+        const link = document.createElement("a");
+        const href = getSearchableContentUrl(data.url);
+        if (!href) continue;
+        link.setAttribute("href", href);
+        link.textContent = String(data.meta?.title ?? "Untitled record");
+        heading.append(link);
+
+        const tags = getResultTags(data.meta ?? {});
+        const excerpt = document.createElement("p");
+        if (typeof data.excerpt === "string" && data.excerpt.trim()) {
+          appendSafeExcerpt(excerpt, data.excerpt);
+        } else {
+          excerpt.textContent = getResultDescription(data.meta ?? {});
+        }
+
+        article.append(heading);
+        appendTags(article, tags);
+        if (excerpt.textContent?.trim()) {
+          article.append(excerpt);
+        }
+        results.appendChild(article);
+      }
+    });
+  </script>
+</BaseLayout>

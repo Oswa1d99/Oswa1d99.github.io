@@ -1,0 +1,26 @@
+---
+import { getTagLabel } from "../config/tags";
+
+interface Props {
+  tags: string[];
+  linked?: boolean;
+}
+
+const { tags, linked = true } = Astro.props;
+---
+
+<ul class="tag-list" aria-label="Tags">
+  {
+    tags.map((tag) => (
+      <li>
+        {linked ? (
+          <a class="tag" href={`/tags/${tag}/`}>
+            {getTagLabel(tag)}
+          </a>
+        ) : (
+          <span class="tag">{getTagLabel(tag)}</span>
+        )}
+      </li>
+    ))
+  }
+</ul>

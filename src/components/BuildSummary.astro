@@ -1,0 +1,55 @@
+---
+import TagList from "./TagList.astro";
+import type { ProjectEntryLike, WritingEntryLike } from "../lib/content/graph";
+
+interface Props {
+  build: ProjectEntryLike;
+  relatedRecords?: WritingEntryLike[];
+}
+
+const { build, relatedRecords = [] } = Astro.props;
+---
+
+<section class="build-panel">
+  <p class="meta">
+    {build.data.status} / updated {
+      build.data.updatedAt.toISOString().slice(0, 10)
+    }
+  </p>
+  <h2><a href={`/build/${build.id}/`}>{build.data.title}</a></h2>
+  <p>{build.data.description}</p>
+  <TagList tags={build.data.tags} />
+  <div>
+    <h3>What works now</h3>
+    <p>
+      The public build thread frames the problem, current status, and related
+      Records. Deeper implementation artifacts will appear only when they are
+      real.
+    </p>
+  </div>
+  {
+    relatedRecords.length > 0 ? (
+      <div>
+        <h3>Related Records</h3>
+        <ul>
+          {relatedRecords.map((record) => (
+            <li>
+              <a href={`/records/${record.id}/`}>{record.data.title}</a>
+            </li>
+          ))}
+        </ul>
+      </div>
+    ) : null
+  }
+  <p>
+    {build.data.githubUrl ? <a href={build.data.githubUrl}>GitHub</a> : null}
+    {
+      build.data.demoUrl ? (
+        <>
+          {" "}
+          / <a href={build.data.demoUrl}>Demo</a>
+        </>
+      ) : null
+    }
+  </p>
+</section>

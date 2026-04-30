@@ -1,0 +1,35 @@
+---
+import BaseLayout from "../../layouts/BaseLayout.astro";
+import BuildSummary from "../../components/BuildSummary.astro";
+import EmptyState from "../../components/EmptyState.astro";
+import { getBuildOverviewContent } from "../../lib/content/graph";
+
+const builds = await getBuildOverviewContent();
+---
+
+<BaseLayout title="Build" description="One focused public build thread.">
+  <section class="page-frame">
+    <h1>Build</h1>
+    <p>
+      A focused open-source build thread: what is being built, why it matters,
+      current status, and related Records.
+    </p>
+    {
+      builds.length > 0 ? (
+        builds.map((item) => (
+          <BuildSummary
+            build={item.build}
+            relatedRecords={item.relatedRecords}
+          />
+        ))
+      ) : (
+        <EmptyState
+          title="No public build thread is ready yet"
+          message="Start with Records or GitHub."
+          href="/records/"
+          action="Browse Records"
+        />
+      )
+    }
+  </section>
+</BaseLayout>

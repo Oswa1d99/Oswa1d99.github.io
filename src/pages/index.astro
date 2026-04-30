@@ -1,0 +1,60 @@
+---
+import BaseLayout from "../layouts/BaseLayout.astro";
+import RecordList from "../components/RecordList.astro";
+import BuildSummary from "../components/BuildSummary.astro";
+import EmptyState from "../components/EmptyState.astro";
+import { homeHero, site } from "../config/site";
+import { getHomePageContent } from "../lib/content/graph";
+
+const home = await getHomePageContent();
+const hasProof = home.records.length > 0 || Boolean(home.build);
+---
+
+<BaseLayout>
+  <section class="page-frame home-cover" aria-labelledby="home-title">
+    <p class="eyebrow">{site.role}</p>
+    <h1 id="home-title">{homeHero.brand}</h1>
+    <p class="home-claim">
+      {homeHero.editorialClaim.map((line) => <span>{line}</span>)}
+    </p>
+    <p class="prompt-line home-prompt">
+      <span class="prompt-marker" aria-hidden="true">&gt;</span>
+      <span>{homeHero.promptThesis}</span>
+    </p>
+  </section>
+
+  {
+    hasProof ? (
+      <section class="page-frame home-proof" aria-label="Latest proof">
+        {home.records.length > 0 ? (
+          <section class="home-proof__section" aria-labelledby="recent-records">
+            <h2 id="recent-records">Recent Records</h2>
+            <RecordList records={home.records} headingLevel="h3" tagLimit={0} />
+          </section>
+        ) : null}
+
+        {home.build ? (
+          <section class="home-proof__section" aria-labelledby="current-build">
+            <h2 id="current-build">Current Build</h2>
+            <BuildSummary
+              build={home.build}
+              relatedRecords={home.relatedBuildRecords}
+            />
+          </section>
+        ) : null}
+      </section>
+    ) : (
+      <section class="page-frame home-proof" aria-labelledby="start-here">
+        <div class="home-proof__section">
+          <h2 id="start-here">Start Here</h2>
+          <EmptyState
+            title="Public proof is being organized"
+            message="Read About for context or open GitHub for current public work."
+            href="/about/"
+            action="Read About"
+          />
+        </div>
+      </section>
+    )
+  }
+</BaseLayout>

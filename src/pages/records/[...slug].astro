@@ -1,0 +1,23 @@
+---
+import { render } from "astro:content";
+import ContentLayout from "../../layouts/ContentLayout.astro";
+import { getPublicRecordStaticPaths } from "../../lib/content/graph";
+
+export async function getStaticPaths() {
+  return getPublicRecordStaticPaths();
+}
+
+const { record } = Astro.props;
+const { Content } = await render(record);
+const hasMermaid = record.body?.includes("```mermaid") ?? false;
+---
+
+<ContentLayout
+  title={record.data.title}
+  description={record.data.description}
+  date={record.data.publishedAt}
+  tags={record.data.tags}
+  hasMermaid={hasMermaid}
+>
+  <Content />
+</ContentLayout>

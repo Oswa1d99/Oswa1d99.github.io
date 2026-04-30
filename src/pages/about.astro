@@ -1,0 +1,59 @@
+---
+import BaseLayout from "../layouts/BaseLayout.astro";
+import { aboutPage, socialLinks } from "../config/site";
+---
+
+<BaseLayout title={aboutPage.title} description={aboutPage.description}>
+  <article class="reading-frame about-page">
+    <header class="about-hero">
+      <p class="eyebrow">{aboutPage.eyebrow}</p>
+      <h1>{aboutPage.title}</h1>
+      <div class="about-intro">
+        {aboutPage.intro.map((paragraph) => <p>{paragraph}</p>)}
+      </div>
+    </header>
+
+    <section class="about-section" aria-labelledby="about-context">
+      <h2 id="about-context">{aboutPage.context.heading}</h2>
+      <dl class="about-ledger">
+        {
+          aboutPage.context.rows.map((row) => (
+            <div>
+              <dt>{row.label}</dt>
+              <dd>{row.value}</dd>
+            </div>
+          ))
+        }
+      </dl>
+    </section>
+
+    <section class="about-section" aria-labelledby="about-work-themes">
+      <h2 id="about-work-themes">{aboutPage.workThemes.heading}</h2>
+      <p>{aboutPage.workThemes.intro}</p>
+      <dl class="about-ledger">
+        {
+          aboutPage.workThemes.items.map((item) => (
+            <div>
+              <dt>{item.label}</dt>
+              <dd>{item.description}</dd>
+            </div>
+          ))
+        }
+      </dl>
+    </section>
+
+    <section class="about-section" aria-labelledby="about-contact">
+      <h2 id="about-contact">{aboutPage.contact.heading}</h2>
+      <p>{aboutPage.contact.intro}</p>
+      <ul class="about-contact-list">
+        {
+          socialLinks.map((link) => (
+            <li>
+              <a href={link.href}>{link.label}</a>
+            </li>
+          ))
+        }
+      </ul>
+    </section>
+  </article>
+</BaseLayout>

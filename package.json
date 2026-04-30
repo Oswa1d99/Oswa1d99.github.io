@@ -1,0 +1,32 @@
+{
+  "name": "jaybaek-dev",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "astro dev",
+    "start": "astro dev",
+    "test": "vitest run --passWithNoTests",
+    "test:watch": "vitest",
+    "astro": "astro",
+    "build": "astro build && if find dist -name '*.html' -type f | grep -q .; then pagefind --site dist; else echo 'No HTML files found; skipping Pagefind.'; fi",
+    "preview": "astro preview",
+    "format": "prettier --write \"src/**/*.{astro,css,ts}\" \"*.{js,json,mjs,ts}\" \".github/**/*.yml\" --ignore-unknown --no-error-on-unmatched-pattern",
+    "lint": "prettier --check \"src/**/*.{astro,css,ts}\" \"*.{js,json,mjs,ts}\" \".github/**/*.yml\" --ignore-unknown --no-error-on-unmatched-pattern"
+  },
+  "dependencies": {
+    "@fontsource/ibm-plex-mono": "^5.2.7",
+    "@fontsource/newsreader": "^5.2.10",
+    "@fontsource/source-sans-3": "^5.2.9",
+    "astro": "6.1.10",
+    "mermaid": "^11.14.0"
+  },
+  "devDependencies": {
+    "@astrojs/check": "0.9.9",
+    "pagefind": "1.5.2",
+    "prettier": "3.8.3",
+    "prettier-plugin-astro": "0.14.1",
+    "typescript": "5.9.3",
+    "vitest": "4.1.5"
+  }
+}

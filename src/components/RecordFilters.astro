@@ -1,0 +1,295 @@
+---
+import {
+  getFocusGroups,
+  getTagsByRole,
+  tagSlugs,
+  getTagLabel,
+} from "../config/tags";
+
+const focusGroupOptions = getFocusGroups();
+const formatOptions = getTagsByRole("format");
+---
+
+<form
+  class="record-filters"
+  data-record-filters
+  data-pagefind-ignore
+  aria-label="Filter records"
+>
+  <div class="record-filter-toolbar">
+    <div class="record-filters__summary">
+      <p class="meta" data-result-count></p>
+      <p class="record-filters__active" data-filter-summary>All records</p>
+      <ul class="record-filter-tokens" data-filter-tokens hidden></ul>
+    </div>
+    <div class="record-filter-actions">
+      <button
+        class="record-filter-toggle"
+        type="button"
+        aria-expanded="false"
+        aria-controls="record-filter-panel"
+        data-filter-toggle
+      >
+        <span>Filter</span>
+        <span class="record-filter-toggle__count" data-filter-count hidden>
+          0
+        </span>
+      </button>
+      <label class="record-sort-control">
+        <span class="visually-hidden">Sort records</span>
+        <select name="sort">
+          <option value="newest">Newest first</option>
+          <option value="oldest">Oldest first</option>
+        </select>
+      </label>
+    </div>
+  </div>
+  <div
+    class="record-filter-panel"
+    id="record-filter-panel"
+    data-filter-panel
+    hidden
+  >
+    <div class="record-filter-panel__inner">
+      <label>
+        Focus
+        <select name="focus">
+          <option value="">All</option>
+          {
+            focusGroupOptions.map((group) => (
+              <option value={group.tags.join(" ")}>{group.label}</option>
+            ))
+          }
+        </select>
+      </label>
+      <label>
+        Format
+        <select name="format">
+          <option value="">All</option>
+          {
+            formatOptions.map((tag) => (
+              <option value={tag.slug}>{tag.label}</option>
+            ))
+          }
+        </select>
+      </label>
+      <label>
+        Tag
+        <select name="tag">
+          <option value="">All</option>
+          {
+            tagSlugs.map((slug) => (
+              <option value={slug}>{getTagLabel(slug)}</option>
+            ))
+          }
+        </select>
+      </label>
+      <button
+        class="record-filter-clear"
+        type="button"
+        data-clear-filters
+        hidden
+      >
+        Clear filters
+      </button>
+    </div>
+  </div>
+</form>
+<p
+  class="empty-state record-filter-empty"
+  data-filter-empty
+  data-pagefind-ignore
+  hidden
+>
+  No records matched these filters. Clear one filter or browse all records.
+</p>
+
+<script>
+  const form = document.querySelector("[data-record-filters]");
+  const cards = [...document.querySelectorAll("[data-record-card]")];
+  const count = document.querySelector("[data-result-count]");
+  const empty = document.querySelector("[data-filter-empty]");
+  const toggle = document.querySelector("[data-filter-toggle]");
+  const panel = document.querySelector("[data-filter-panel]");
+  const clear = document.querySelector("[data-clear-filters]");
+  const filterSummary = document.querySelector("[data-filter-summary]");
+  const filterTokens = document.querySelector("[data-filter-tokens]");
+  const filterCount = document.querySelector("[data-filter-count]");
+
+  function getSelectedLabel(form, name) {
+    const field = form.elements.namedItem(name);
+    if (!(field instanceof HTMLSelectElement)) return "";
+    return field.selectedOptions[0]?.textContent?.trim() ?? "";
+  }
+
+  function setFilterPanel(open) {
+    if (!(panel instanceof HTMLElement) || !(toggle instanceof HTMLElement)) {
+      return;
+    }
+
+    toggle.setAttribute("aria-expanded", String(open));
+    if (open) {
+      if (form instanceof HTMLElement) {
+        form.setAttribute("data-filter-open", "true");
+      }
+      panel.hidden = false;
+      panel.inert = false;
+      requestAnimationFrame(() => {
+        panel.setAttribute("data-open", "true");
+      });
+      return;
+    }
+
+    panel.removeAttribute("data-open");
+    panel.inert = true;
+    window.setTimeout(() => {
+      if (!panel.hasAttribute("data-open")) {
+        panel.hidden = true;
+        if (form instanceof HTMLElement) {
+          form.removeAttribute("data-filter-open");
+        }
+      }
+    }, 190);
+  }
+
+  function syncUrl(form) {
+    const data = new FormData(form);
+    const params = new URLSearchParams(window.location.search);
+
+    for (const name of ["focus", "format", "tag", "sort"]) {
+      const value = String(data.get(name) ?? "");
+      if (!value || (name === "sort" && value === "newest")) {
+        params.delete(name);
+      } else {
+        params.set(name, value);
+      }
+    }
+
+    const query = params.toString();
+    const nextUrl = query
+      ? `${window.location.pathname}?${query}`
+      : window.location.pathname;
+    window.history.replaceState({}, "", nextUrl);
+  }
+
+  function restoreUrlState(form) {
+    const params = new URLSearchParams(window.location.search);
+    for (const name of ["focus", "format", "tag", "sort"]) {
+      const value = params.get(name);
+      const field = form.elements.namedItem(name);
+      if (value && field instanceof HTMLSelectElement) {
+        field.value = value;
+      }
+    }
+  }
+
+  function updateFilterSummary(form) {
+    const active = ["focus", "format", "tag"]
+      .map((name) => {
+        const field = form.elements.namedItem(name);
+        if (!(field instanceof HTMLSelectElement) || !field.value) return null;
+        return getSelectedLabel(form, name);
+      })
+      .filter(Boolean);
+
+    if (filterSummary) {
+      filterSummary.textContent =
+        active.length > 0 ? active.join(" / ") : "All records";
+    }
+
+    if (filterTokens instanceof HTMLElement) {
+      filterTokens.replaceChildren();
+      for (const label of active) {
+        const item = document.createElement("li");
+        item.textContent = label;
+        filterTokens.append(item);
+      }
+      filterTokens.toggleAttribute("hidden", active.length === 0);
+    }
+
+    if (filterCount instanceof HTMLElement) {
+      filterCount.textContent = String(active.length);
+      filterCount.toggleAttribute("hidden", active.length === 0);
+    }
+
+    if (clear instanceof HTMLElement) {
+      clear.toggleAttribute("hidden", active.length === 0);
+    }
+  }
+
+  function applyFilters() {
+    if (!(form instanceof HTMLFormElement)) return;
+    const data = new FormData(form);
+    const focus = String(data.get("focus") ?? "")
+      .split(" ")
+      .filter(Boolean);
+    const format = String(data.get("format") ?? "");
+    const tag = String(data.get("tag") ?? "");
+    const sort = String(data.get("sort") ?? "newest");
+    const visible = [];
+
+    for (const card of cards) {
+      const tags = String(card.getAttribute("data-tags") ?? "").split(" ");
+      const matchesFocus =
+        focus.length === 0 || focus.some((tag) => tags.includes(tag));
+      const matchesFormat = !format || tags.includes(format);
+      const matchesTag = !tag || tags.includes(tag);
+      const shouldShow = matchesFocus && matchesFormat && matchesTag;
+      card.toggleAttribute("hidden", !shouldShow);
+      if (shouldShow) visible.push(card);
+    }
+
+    const list = document.querySelector(".record-list");
+    if (list) {
+      const sorted = visible.sort((a, b) => {
+        const aTime = a.querySelector("time")?.getAttribute("datetime") ?? "";
+        const bTime = b.querySelector("time")?.getAttribute("datetime") ?? "";
+        return sort === "oldest"
+          ? aTime.localeCompare(bTime)
+          : bTime.localeCompare(aTime);
+      });
+      for (const item of sorted) list.appendChild(item);
+    }
+
+    if (count) {
+      count.textContent = `${visible.length} record${visible.length === 1 ? "" : "s"}`;
+    }
+    updateFilterSummary(form);
+    syncUrl(form);
+    empty?.toggleAttribute("hidden", cards.length === 0 || visible.length > 0);
+  }
+
+  if (form instanceof HTMLFormElement) {
+    restoreUrlState(form);
+  }
+
+  form?.addEventListener("change", applyFilters);
+  toggle?.addEventListener("click", () => {
+    const open = toggle.getAttribute("aria-expanded") !== "true";
+    setFilterPanel(open);
+  });
+  clear?.addEventListener("click", () => {
+    if (!(form instanceof HTMLFormElement)) return;
+    for (const name of ["focus", "format", "tag"]) {
+      const field = form.elements.namedItem(name);
+      if (field instanceof HTMLSelectElement) {
+        field.value = "";
+      }
+    }
+    applyFilters();
+  });
+  document.addEventListener("click", (event) => {
+    if (!(form instanceof HTMLElement) || !(event.target instanceof Node)) {
+      return;
+    }
+    if (!form.contains(event.target)) {
+      setFilterPanel(false);
+    }
+  });
+  document.addEventListener("keydown", (event) => {
+    if (event.key === "Escape") {
+      setFilterPanel(false);
+    }
+  });
+  applyFilters();
+</script>
