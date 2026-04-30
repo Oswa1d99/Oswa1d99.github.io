@@ -141,16 +141,15 @@ input {
 
 .site-brand {
   display: inline-flex;
-  min-height: 44px;
+  min-height: 40px;
   align-self: center;
   align-items: center;
   color: var(--color-text);
-  font-family: var(--font-display);
-  font-size: 18px;
-  font-weight: 700;
+  font-family: var(--font-mono);
+  font-size: 13px;
+  font-weight: 600;
   line-height: 1;
   text-decoration: none;
-  transform: translateY(var(--space-sm));
 }
 
 .site-brand:visited {
