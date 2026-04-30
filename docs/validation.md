@@ -4,22 +4,11 @@ This is the active validation checklist for Jay Baek.dev.
 
 ## Local Checks
 
-Before shipping v1, run:
+Before shipping, run:
 
-```bash
-npm run test
-npm run astro check
-npm run build
-```
+`npm run validate`
 
-If linting and formatting scripts are added, also run:
-
-```bash
-npm run format
-npm run lint
-```
-
-The most important validation is that content schema and build checks catch broken frontmatter, invalid content references, and rendering failures.
+`npm run validate` is the executable Validation Module Interface. It runs formatting checks, Vitest, Astro type checks, and the production build with Pagefind generation. CI must use the same command so local and deploy validation do not drift.
 
 ## Known Audit Caveat
 

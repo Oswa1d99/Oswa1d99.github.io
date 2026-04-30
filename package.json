@@ -8,11 +8,14 @@
     "start": "astro dev",
     "test": "vitest run --passWithNoTests",
     "test:watch": "vitest",
+    "check": "astro check",
     "astro": "astro",
     "build": "astro build && if find dist -name '*.html' -type f | grep -q .; then pagefind --site dist; else echo 'No HTML files found; skipping Pagefind.'; fi",
     "preview": "astro preview",
-    "format": "prettier --write \"src/**/*.{astro,css,ts}\" \"*.{js,json,mjs,ts}\" \".github/**/*.yml\" --ignore-unknown --no-error-on-unmatched-pattern",
-    "lint": "prettier --check \"src/**/*.{astro,css,ts}\" \"*.{js,json,mjs,ts}\" \".github/**/*.yml\" --ignore-unknown --no-error-on-unmatched-pattern"
+    "format": "prettier --write \"src/**/*.{astro,css,ts,json}\" \"*.{js,json,mjs,ts}\" \".github/**/*.yml\" \"docs/**/*.md\" --ignore-unknown --no-error-on-unmatched-pattern",
+    "format:check": "prettier --check \"src/**/*.{astro,css,ts,json}\" \"*.{js,json,mjs,ts}\" \".github/**/*.yml\" \"docs/**/*.md\" --ignore-unknown --no-error-on-unmatched-pattern",
+    "lint": "npm run format:check",
+    "validate": "npm run format:check && npm run test && npm run check && npm run build"
   },
   "dependencies": {
     "@fontsource/ibm-plex-mono": "^5.2.7",
