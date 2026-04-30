@@ -45,6 +45,7 @@ Client-side filtering must consume that JSON payload and stable `data-record-car
 
 Files:
 
+- `src/lib/rendering/content-page.ts`
 - `src/layouts/ContentLayout.astro`
 - `src/components/content/**`
 - `src/pages/records/[...slug].astro`
@@ -54,6 +55,8 @@ Files:
 The Content Rendering Module owns how Markdown and optional MDX appear across Writing and Project detail pages.
 
 Writing detail and Project detail should use the same rendering rules.
+
+Route pages should pass content entries through `getContentPageMeta` instead of detecting Mermaid blocks or projecting layout metadata inline.
 
 ### Mermaid Renderer Module
 

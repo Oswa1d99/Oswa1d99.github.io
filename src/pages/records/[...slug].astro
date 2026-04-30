@@ -2,6 +2,7 @@
 import { render } from "astro:content";
 import ContentLayout from "../../layouts/ContentLayout.astro";
 import { getPublicRecordStaticPaths } from "../../lib/content/graph";
+import { getContentPageMeta } from "../../lib/rendering/content-page";
 
 export async function getStaticPaths() {
   return getPublicRecordStaticPaths();
@@ -9,15 +10,21 @@ export async function getStaticPaths() {
 
 const { record } = Astro.props;
 const { Content } = await render(record);
-const hasMermaid = record.body?.includes("```mermaid") ?? false;
+const contentMeta = getContentPageMeta({
+  title: record.data.title,
+  description: record.data.description,
+  date: record.data.publishedAt,
+  tags: record.data.tags,
+  body: record.body,
+});
 ---
 
 <ContentLayout
-  title={record.data.title}
-  description={record.data.description}
-  date={record.data.publishedAt}
-  tags={record.data.tags}
-  hasMermaid={hasMermaid}
+  title={contentMeta.title}
+  description={contentMeta.description}
+  date={contentMeta.date}
+  tags={contentMeta.tags}
+  hasMermaid={contentMeta.hasMermaid}
 >
   <Content />
 </ContentLayout>

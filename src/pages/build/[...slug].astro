@@ -2,6 +2,7 @@
 import { render } from "astro:content";
 import ContentLayout from "../../layouts/ContentLayout.astro";
 import { getBuildStaticPaths } from "../../lib/content/graph";
+import { getContentPageMeta } from "../../lib/rendering/content-page";
 
 export async function getStaticPaths() {
   return getBuildStaticPaths();
@@ -9,15 +10,21 @@ export async function getStaticPaths() {
 
 const { build } = Astro.props;
 const { Content } = await render(build);
-const hasMermaid = build.body?.includes("```mermaid") ?? false;
+const contentMeta = getContentPageMeta({
+  title: build.data.title,
+  description: build.data.description,
+  date: build.data.updatedAt,
+  tags: build.data.tags,
+  body: build.body,
+});
 ---
 
 <ContentLayout
-  title={build.data.title}
-  description={build.data.description}
-  date={build.data.updatedAt}
-  tags={build.data.tags}
-  hasMermaid={hasMermaid}
+  title={contentMeta.title}
+  description={contentMeta.description}
+  date={contentMeta.date}
+  tags={contentMeta.tags}
+  hasMermaid={contentMeta.hasMermaid}
 >
   <Content />
 </ContentLayout>
