@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { homeHero } from "./home";
+import { homeHero } from "./site-content";
 import { site } from "./site";
 
 describe("homeHero", () => {

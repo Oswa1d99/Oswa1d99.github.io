@@ -15,7 +15,7 @@ Occasional tag updates should touch:
 
 ## Editing UI Text
 
-Editable site copy lives in `src/config/site-content.json`.
+Editable site copy lives in `src/config/site-content.json`. Runtime code should read it through typed accessors in `src/config/site-content.ts`.
 
 Use this file for:
 
@@ -148,7 +148,7 @@ Current Focus groups are a presentation layer over tags. They can group several 
 
 ### Editing Tags
 
-Editable Tag data lives in `src/config/taxonomy.json`.
+Editable Tag data lives in `src/config/taxonomy.json`. Runtime code should read it through typed accessors in `src/config/tags.ts`.
 
 Use this file to change:
 

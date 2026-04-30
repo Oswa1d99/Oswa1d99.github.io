@@ -28,13 +28,13 @@
 
 **Mermaid Renderer Module**: The Module inside the Content Rendering Module that owns Mermaid diagram detection, conditional loading, source hiding, fallback, layout reservation, render lifecycle state, and future animation hooks.
 
-**Site Identity Module**: The Module that owns site name, hero copy, profile copy, navigation labels, and social links.
+**Site Identity Module**: The Module that owns editable UI text through `src/config/site-content.json` and typed accessors through `src/config/site-content.ts`.
 
-**Taxonomy Module**: The Module that owns Tag slugs, labels, roles, focus groups, display order, and known Tag validation.
+**Taxonomy Module**: The Module that owns editable Tag data through `src/config/taxonomy.json` and typed accessors through `src/config/tags.ts`.
 
 **Content Operations Module**: The Module made of documentation, schema, and future validation scripts that explains and checks how content is added and maintained.
 
-**Deployment Module**: The Module that owns GitHub Pages deployment assumptions, including repository name, Astro `site`, Astro `base`, canonical URLs, asset paths, and deploy workflow checks.
+**Deployment Module**: The Module that owns base-aware paths through `src/config/deployment.ts` and GitHub Pages deployment assumptions, including repository name, Astro `site`, Astro `base`, canonical URLs, asset paths, and deploy workflow checks.
 
 **Validation Module**: The Module that owns local checks, browser QA, route smoke checks, deployment smoke checks, and the mapping between expected behavior and verification commands.
 

@@ -82,9 +82,12 @@ High-value diagrams may use source-controlled `.mmd` plus generated `.svg` asset
 Files:
 
 - `src/config/site.ts`
-- `src/config/navigation.ts`
+- `src/config/site-content.json`
+- `src/config/site-content.ts`
 
-The Site Identity Module owns site name, hero copy, profile copy, navigation labels, social links, and hiring-facing Korean/English copy. `src/config/site.ts` is the authoring surface for site/profile/navigation copy. Tag display names live in the Taxonomy Module.
+The Site Identity Module owns editable UI text through `src/config/site-content.json` and typed accessors through `src/config/site-content.ts`.
+
+`src/config/site.ts` composes deployment-aware site metadata for runtime use. Tag display names live in the Taxonomy Module.
 
 ### Taxonomy Module
 
@@ -94,7 +97,9 @@ Files:
 - `src/config/tags.ts`
 - `src/config/tags.test.ts`
 
-The Taxonomy Module owns Tag labels, roles, focus groups, format detection, display order, and known Tag validation. Pages and UI modules should ask this Module for Tag facts instead of inferring behavior from raw slug strings.
+The Taxonomy Module owns editable Tag data through `src/config/taxonomy.json` and typed accessors through `src/config/tags.ts`.
+
+It also owns Tag roles, focus groups, format detection, display order, and known Tag validation. Pages and UI modules should ask this Module for Tag facts instead of inferring behavior from raw slug strings.
 
 ### Design System Module
 
@@ -125,9 +130,11 @@ Files:
 - `docs/deployment.md`
 - `astro.config.mjs`
 - `.github/workflows/deploy.yml`
-- `src/config/site.ts`
+- `src/config/deployment.ts`
 
-The Deployment Module owns domain choice, GitHub Pages assumptions, Astro `site`, Astro `base`, canonical URLs, asset paths, and deploy workflow checks. See `docs/deployment.md`.
+The Deployment Module owns base-aware paths through `src/config/deployment.ts`.
+
+It also owns domain choice, GitHub Pages assumptions, Astro `site`, Astro `base`, canonical URLs, asset paths, and deploy workflow checks. See `docs/deployment.md`.
 
 ### External Capability Modules
 
@@ -143,7 +150,7 @@ Do not introduce Adapter Interfaces for these capabilities until there are at le
 - `src/components/**` owns presentational UI. Components receive already-prepared props and should not query Astro content collections directly.
 - `src/layouts/**` owns shared document frames, metadata placement, and reading layouts. Layouts should not decide which content appears on a page.
 - `src/lib/content/**` owns content retrieval and derived relationships. Only `graph.ts` is public to pages.
-- `src/config/**` owns site identity, navigation, social links, tag display names, and other low-change configuration.
+- `src/config/**` owns site identity, navigation, social links, taxonomy, deployment helpers, and other low-change configuration.
 - `src/content/**` owns authored content only. It contains Markdown, MDX, and collection entries, not rendering logic.
 - `docs/**` owns human and agent operating guidance. It should explain how to add and maintain content, not duplicate runtime logic.
 
