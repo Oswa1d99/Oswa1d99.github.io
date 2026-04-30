@@ -10,6 +10,8 @@ import {
 } from "./tags";
 
 describe("taxonomy", () => {
+  const taxonomySlugPattern = /^[a-z0-9]+(?:-[a-z0-9]+)*$/;
+
   it("answers tag facts through the taxonomy interface", () => {
     expect(hasKnownTag("study-note")).toBe(true);
     expect(hasKnownTag("unknown")).toBe(false);
@@ -39,6 +41,20 @@ describe("taxonomy", () => {
   it("only exposes known tags in focus groups", () => {
     for (const group of getFocusGroups()) {
       expect(group.tags.every(hasKnownTag)).toBe(true);
+    }
+  });
+
+  it("keeps authored tag slugs and labels stable for non-developers", () => {
+    for (const slug of tagSlugs) {
+      expect(slug).toMatch(taxonomySlugPattern);
+      expect(getTagLabel(slug).trim()).not.toBe("");
+    }
+  });
+
+  it("keeps authored focus group slugs and labels stable for non-developers", () => {
+    for (const group of getFocusGroups()) {
+      expect(group.slug).toMatch(taxonomySlugPattern);
+      expect(group.label.trim()).not.toBe("");
     }
   });
 

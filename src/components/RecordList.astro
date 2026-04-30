@@ -11,6 +11,14 @@ interface Props {
 
 const { records, headingLevel = "h2", tagLimit } = Astro.props;
 const Heading = headingLevel;
+const discoveryRecords = JSON.stringify(
+  records.map((record) => ({
+    id: record.id,
+    tags: record.tags,
+    formatTag: record.formatTag ?? "",
+    publishedAt: record.publishedAt.toISOString(),
+  })),
+).replaceAll("<", "\\u003c");
 ---
 
 <ul class="record-list">
@@ -44,12 +52,5 @@ const Heading = headingLevel;
   is:inline
   type="application/json"
   data-record-discovery
-  set:html={JSON.stringify(
-    records.map((record) => ({
-      id: record.id,
-      tags: record.tags,
-      formatTag: record.formatTag ?? "",
-      publishedAt: record.publishedAt.toISOString(),
-    })),
-  )}
+  set:html={discoveryRecords}
 />

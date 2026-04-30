@@ -322,8 +322,8 @@ Litmus checks:
 
 ## Implementation Notes
 
-- Add a dedicated editable Home copy config, preferably `src/config/home.ts`.
-- Keep public navigation labels in `src/config/navigation.ts`.
+- Keep editable site copy and navigation labels in `src/config/site-content.json`.
+- Consume authored site content through typed accessors in `src/config/site-content.ts` and `src/config/site.ts`.
 - Search should remain an icon action at the far right of the header.
 - Pages should consume prepared content from the Content Graph Module.
 - Do not duplicate filtering, sorting, tag indexing, or related-content logic in components.

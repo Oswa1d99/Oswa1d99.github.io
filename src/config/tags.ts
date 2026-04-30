@@ -13,15 +13,31 @@ export type FocusGroup = {
   tags: string[];
 };
 
+const TAXONOMY_SLUG_PATTERN = /^[a-z0-9]+(?:-[a-z0-9]+)*$/;
+
 function assertTagRole(role: string): asserts role is TagRole {
   if (!["focus", "topic", "format"].includes(role)) {
     throw new Error(`Unknown Tag role: ${role}`);
   }
 }
 
+function assertTaxonomySlug(slug: string, context: string) {
+  if (!TAXONOMY_SLUG_PATTERN.test(slug)) {
+    throw new Error(`${context} must use a stable lowercase slug: ${slug}`);
+  }
+}
+
+function assertTaxonomyLabel(label: string, context: string) {
+  if (label.trim() === "") {
+    throw new Error(`${context} label must not be empty`);
+  }
+}
+
 function buildTagDefinitions() {
   const definitions: Record<string, { label: string; role: TagRole }> = {};
   for (const tag of taxonomy.tags) {
+    assertTaxonomySlug(tag.slug, "Tag");
+    assertTaxonomyLabel(tag.label, `Tag ${tag.slug}`);
     assertTagRole(tag.role);
     if (Object.hasOwn(definitions, tag.slug)) {
       throw new Error(`Duplicate Tag slug: ${tag.slug}`);
@@ -35,6 +51,9 @@ function buildFocusGroups(
   definitions: Record<string, { label: string; role: TagRole }>,
 ) {
   return taxonomy.focusGroups.map((group) => {
+    assertTaxonomySlug(group.slug, "Focus group");
+    assertTaxonomyLabel(group.label, `Focus group ${group.slug}`);
+
     if (group.tags.length === 0) {
       throw new Error(`Focus group has no Tags: ${group.slug}`);
     }
