@@ -202,7 +202,8 @@ Search UI rules:
 - Highlight the matched term in snippets with `mark`.
 - If a title or tag matches but no body snippet exists, show the Writing description.
 - If no description exists, show the first useful body excerpt.
-- Use this empty state exactly: `No records matched this search. Try a broader term.`
+- Use the empty search result message authored at
+  `src/config/site-content.json` under `emptyStates.searchNoMatch`.
 
 Search indexing rules:
 

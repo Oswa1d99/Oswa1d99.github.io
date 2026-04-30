@@ -6,8 +6,5 @@ This does not introduce a hosted search Adapter. Pagefind or an equivalent build
 
 External search services such as Algolia, Meilisearch, or Typesense remain excluded from v1 under ADR 0003. If hosted search is introduced later, it should be recorded as a dedicated Module with a real production Adapter and local/test Adapter.
 
-The empty search result message is:
-
-```text
-No records matched this search. Try a broader term.
-```
+The empty search result message is authored in `src/config/site-content.json`
+under `emptyStates.searchNoMatch`.
