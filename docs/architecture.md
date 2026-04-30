@@ -95,7 +95,6 @@ Files:
 - `docs/content-guide.md`
 - `docs/content-templates/**`
 - `src/content.config.ts`
-- `src/config/tags.ts`
 - Future `scripts/validate-content.*` if schema checks stop covering common mistakes.
 
 The Content Operations Module is the operating manual and validation surface for content work. See `docs/content-guide.md`.
