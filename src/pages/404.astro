@@ -12,6 +12,14 @@ import { emptyStates } from "../config/site-content";
     <p>
       {emptyStates.pageNotFound.message}
     </p>
-    <p><a href="/records/">Browse Records</a> / <a href="/">Home</a></p>
+    <p>
+      <a href={emptyStates.pageNotFound.recordsHref}>
+        {emptyStates.pageNotFound.recordsAction}
+      </a>
+      {" / "}
+      <a href={emptyStates.pageNotFound.homeHref}>
+        {emptyStates.pageNotFound.homeAction}
+      </a>
+    </p>
   </section>
 </BaseLayout>

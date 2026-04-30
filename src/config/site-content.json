@@ -102,7 +102,11 @@
     "pageNotFound": {
       "title": "Page not found",
       "description": "This page is not available.",
-      "message": "This route does not have a published page. Browse Records or return Home."
+      "message": "This route does not have a published page. Browse Records or return Home.",
+      "recordsHref": "/records/",
+      "recordsAction": "Browse Records",
+      "homeHref": "/",
+      "homeAction": "Home"
     }
   },
   "searchPage": {

@@ -3,6 +3,7 @@ import BaseLayout from "../../layouts/BaseLayout.astro";
 import RecordFilters from "../../components/RecordFilters.astro";
 import RecordList from "../../components/RecordList.astro";
 import EmptyState from "../../components/EmptyState.astro";
+import { emptyStates } from "../../config/site-content";
 import { getAllRecords } from "../../lib/content/graph";
 
 const records = await getAllRecords();
@@ -23,10 +24,10 @@ const records = await getAllRecords();
         <RecordList records={records} />
       ) : (
         <EmptyState
-          title="Records are being organized"
-          message="No published records are in this view yet. Browse About for context."
-          href="/about/"
-          action="Read About"
+          title={emptyStates.recordsNoPublished.title}
+          message={emptyStates.recordsNoPublished.message}
+          href={emptyStates.recordsNoPublished.href}
+          action={emptyStates.recordsNoPublished.action}
         />
       )
     }

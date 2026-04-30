@@ -5,6 +5,7 @@ import {
   tagSlugs,
   getTagLabel,
 } from "../config/tags";
+import { emptyStates } from "../config/site-content";
 
 const focusGroupOptions = getFocusGroups();
 const formatOptions = getTagsByRole("format");
@@ -101,7 +102,7 @@ const formatOptions = getTagsByRole("format");
   data-pagefind-ignore
   hidden
 >
-  No records matched these filters. Clear one filter or browse all records.
+  {emptyStates.recordFilterNoMatch}
 </p>
 
 <script>

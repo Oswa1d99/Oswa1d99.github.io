@@ -44,4 +44,36 @@ describe("site identity", () => {
     expect(siteContent.searchPage.clear).toBe("Clear");
     expect(siteContent.searchPage.fallbackSuffix).toBe(" instead.");
   });
+
+  it("documents empty-state copy used by rendering sites", () => {
+    const linkedEmptyStateKeys = [
+      "homeNoProof",
+      "recordsNoPublished",
+      "buildNoPublicThread",
+      "tagNoRecords",
+      "seriesNoRecords",
+    ] as const;
+
+    for (const key of linkedEmptyStateKeys) {
+      expect(siteContent.emptyStates[key]).toEqual({
+        title: expect.any(String),
+        message: expect.any(String),
+        href: expect.any(String),
+        action: expect.any(String),
+      });
+    }
+
+    expect(siteContent.emptyStates.recordFilterNoMatch).toEqual(
+      expect.any(String),
+    );
+    expect(siteContent.emptyStates.pageNotFound).toEqual({
+      title: expect.any(String),
+      description: expect.any(String),
+      message: expect.any(String),
+      recordsHref: expect.any(String),
+      recordsAction: expect.any(String),
+      homeHref: expect.any(String),
+      homeAction: expect.any(String),
+    });
+  });
 });

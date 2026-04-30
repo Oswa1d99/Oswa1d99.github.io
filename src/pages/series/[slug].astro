@@ -2,6 +2,7 @@
 import BaseLayout from "../../layouts/BaseLayout.astro";
 import RecordList from "../../components/RecordList.astro";
 import EmptyState from "../../components/EmptyState.astro";
+import { emptyStates } from "../../config/site-content";
 import {
   getSeriesPageContent,
   getSeriesStaticPaths,
@@ -24,10 +25,10 @@ const seriesView = await getSeriesPageContent(series.id);
         <RecordList records={seriesView.records} />
       ) : (
         <EmptyState
-          title="No published records are in this series yet"
-          message="Browse all records."
-          href="/records/"
-          action="Browse Records"
+          title={emptyStates.seriesNoRecords.title}
+          message={emptyStates.seriesNoRecords.message}
+          href={emptyStates.seriesNoRecords.href}
+          action={emptyStates.seriesNoRecords.action}
         />
       )
     }

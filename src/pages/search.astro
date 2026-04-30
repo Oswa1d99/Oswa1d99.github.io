@@ -31,7 +31,7 @@ import { emptyStates, searchPage } from "../config/site-content";
     </nav>
     <div class="search-results" data-search-results></div>
   </section>
-  <script define:vars={{ searchPage, emptyStates }}>
+  <script is:inline define:vars={{ searchPage, emptyStates }}>
     const input = document.querySelector("#record-search");
     const status = document.querySelector("[data-search-status]");
     const results = document.querySelector("[data-search-results]");

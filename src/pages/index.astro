@@ -4,6 +4,7 @@ import RecordList from "../components/RecordList.astro";
 import BuildSummary from "../components/BuildSummary.astro";
 import EmptyState from "../components/EmptyState.astro";
 import { homeHero, site } from "../config/site";
+import { emptyStates } from "../config/site-content";
 import { getHomePageContent } from "../lib/content/graph";
 
 const home = await getHomePageContent();
@@ -48,10 +49,10 @@ const hasProof = home.records.length > 0 || Boolean(home.build);
         <div class="home-proof__section">
           <h2 id="start-here">Start Here</h2>
           <EmptyState
-            title="Public proof is being organized"
-            message="Read About for context or open GitHub for current public work."
-            href="/about/"
-            action="Read About"
+            title={emptyStates.homeNoProof.title}
+            message={emptyStates.homeNoProof.message}
+            href={emptyStates.homeNoProof.href}
+            action={emptyStates.homeNoProof.action}
           />
         </div>
       </section>
