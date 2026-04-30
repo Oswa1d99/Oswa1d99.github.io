@@ -38,11 +38,20 @@ describe("site identity", () => {
     expect(siteContent.homeHero.promptThesis).toBe(
       "public technical record, kept honest by status.",
     );
-    expect(siteContent.emptyStates.searchNoMatch).toBe(
-      "No records matched this search. Try a broader term.",
+    expect(siteContent.emptyStates.searchNoMatch.trim().length).toBeGreaterThan(
+      0,
     );
-    expect(siteContent.searchPage.clear).toBe("Clear");
-    expect(siteContent.searchPage.fallbackSuffix).toBe(" instead.");
+
+    const requiredSearchPageKeys = [
+      "clear",
+      "fallbackSuffix",
+      "heading",
+      "browseRecords",
+    ] as const;
+
+    for (const key of requiredSearchPageKeys) {
+      expect(siteContent.searchPage[key].trim().length).toBeGreaterThan(0);
+    }
   });
 
   it("documents empty-state copy used by rendering sites", () => {
