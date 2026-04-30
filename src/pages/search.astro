@@ -55,7 +55,7 @@ import { emptyStates, searchPage } from "../config/site-content";
           status.replaceChildren(
             `${emptyStates.searchUnavailable} `,
             fallbackLink,
-            " instead.",
+            searchPage.fallbackSuffix,
           );
         }
         return null;

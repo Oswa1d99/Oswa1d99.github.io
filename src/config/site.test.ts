@@ -42,5 +42,6 @@ describe("site identity", () => {
       "No records matched this search. Try a broader term.",
     );
     expect(siteContent.searchPage.clear).toBe("Clear");
+    expect(siteContent.searchPage.fallbackSuffix).toBe(" instead.");
   });
 });

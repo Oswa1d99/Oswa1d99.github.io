@@ -117,6 +117,7 @@
     "browseRecords": "Browse all Records",
     "statusSearching": "Searching…",
     "fallbackAction": "Browse Records",
+    "fallbackSuffix": " instead.",
     "resultSingular": "result",
     "resultPlural": "results",
     "untitledResult": "Untitled record"
