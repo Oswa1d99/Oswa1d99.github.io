@@ -64,7 +64,6 @@ Files:
 
 - `src/config/site.ts`
 - `src/config/navigation.ts`
-- `src/config/tags.ts`
 
 The Site Identity Module owns site name, hero copy, profile copy, navigation labels, social links, and hiring-facing Korean/English copy. `src/config/site.ts` is the authoring surface for site/profile/navigation copy. Tag display names live in the Taxonomy Module.
 
@@ -72,6 +71,7 @@ The Site Identity Module owns site name, hero copy, profile copy, navigation lab
 
 Files:
 
+- `src/config/taxonomy.json`
 - `src/config/tags.ts`
 - `src/config/tags.test.ts`
 

@@ -1,0 +1,40 @@
+{
+  "tags": [
+    { "slug": "llm-serving", "label": "LLM serving", "role": "focus" },
+    { "slug": "system-design", "label": "System design", "role": "focus" },
+    { "slug": "cs-fundamentals", "label": "CS fundamentals", "role": "focus" },
+    { "slug": "ai-engineering", "label": "AI engineering", "role": "focus" },
+    { "slug": "latency", "label": "Latency", "role": "topic" },
+    { "slug": "evaluation", "label": "Evaluation", "role": "topic" },
+    { "slug": "queues", "label": "Queues", "role": "topic" },
+    { "slug": "indexing", "label": "Indexing", "role": "topic" },
+    { "slug": "network", "label": "Network", "role": "topic" },
+    { "slug": "agents", "label": "Agents", "role": "topic" },
+    { "slug": "study-note", "label": "Study note", "role": "format" },
+    {
+      "slug": "engineering-memo",
+      "label": "Engineering memo",
+      "role": "format"
+    },
+    { "slug": "diagram", "label": "Diagram", "role": "format" },
+    { "slug": "reflection", "label": "Reflection", "role": "format" },
+    { "slug": "build-log", "label": "Build log", "role": "format" }
+  ],
+  "focusGroups": [
+    {
+      "label": "LLM serving",
+      "slug": "llm-serving",
+      "tags": ["llm-serving", "latency", "evaluation"]
+    },
+    {
+      "label": "System design",
+      "slug": "system-design",
+      "tags": ["system-design", "queues", "indexing", "network"]
+    },
+    {
+      "label": "AI engineering practice",
+      "slug": "ai-engineering",
+      "tags": ["ai-engineering", "agents", "build-log"]
+    }
+  ]
+}

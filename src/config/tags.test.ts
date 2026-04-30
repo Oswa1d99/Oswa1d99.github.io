@@ -6,6 +6,7 @@ import {
   getTagLabel,
   getTagsByRole,
   hasKnownTag,
+  tagSlugs,
 } from "./tags";
 
 describe("taxonomy", () => {
@@ -39,5 +40,16 @@ describe("taxonomy", () => {
       "engineering-memo",
     );
     expect(getPrimaryFormatTag(["latency", "evaluation"])).toBeUndefined();
+  });
+
+  it("loads Tags from the editable taxonomy authoring surface", () => {
+    expect(tagSlugs).toContain("llm-serving");
+    expect(getTagLabel("llm-serving")).toBe("LLM serving");
+    expect(getTagsByRole("focus").map((tag) => tag.slug)).toEqual([
+      "llm-serving",
+      "system-design",
+      "cs-fundamentals",
+      "ai-engineering",
+    ]);
   });
 });

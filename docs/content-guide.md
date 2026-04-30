@@ -11,7 +11,7 @@ Routine content updates should usually touch only:
 
 Occasional tag updates should touch:
 
-- `src/config/tags.ts`
+- `src/config/taxonomy.json`
 
 ## Editing UI Text
 
@@ -145,6 +145,25 @@ Use three conceptual tag roles:
 The UI should not display every tag everywhere. Home should show at most one primary tag or focus label per Writing entry. Records pages may show denser tag metadata because Records are the intended high-information surface.
 
 Current Focus groups are a presentation layer over tags. They can group several tags into a small number of prominent filters without changing the underlying Writing entries.
+
+### Editing Tags
+
+Editable Tag data lives in `src/config/taxonomy.json`.
+
+Use this file to change:
+
+- Tag labels.
+- Tag roles.
+- Focus group labels.
+- Which Tags appear in each focus group.
+
+Use stable lowercase slugs because content frontmatter references them. If a slug changes, update every Writing and Project entry that uses it.
+
+After editing `src/config/taxonomy.json`, run:
+
+```bash
+npm run validate
+```
 
 Example:
 

@@ -28,7 +28,9 @@
 
 **Mermaid Renderer Module**: The Module inside the Content Rendering Module that owns Mermaid diagram detection, conditional loading, source hiding, fallback, layout reservation, render lifecycle state, and future animation hooks.
 
-**Site Identity Module**: The Module that owns site name, hero copy, profile copy, navigation labels, social links, and tag display names.
+**Site Identity Module**: The Module that owns site name, hero copy, profile copy, navigation labels, and social links.
+
+**Taxonomy Module**: The Module that owns Tag slugs, labels, roles, focus groups, display order, and known Tag validation.
 
 **Content Operations Module**: The Module made of documentation, schema, and future validation scripts that explains and checks how content is added and maintained.
 
