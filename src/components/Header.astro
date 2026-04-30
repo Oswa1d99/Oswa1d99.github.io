@@ -14,30 +14,39 @@ function isCurrent(href: string) {
     <a class="site-brand" href="/">{site.name}</a>
     <nav class="site-nav" aria-label="Primary navigation">
       {
-        navigation.map((item) => (
-          <a
-            href={item.href}
-            aria-current={isCurrent(item.href) ? "page" : undefined}
-          >
-            {item.label}
-          </a>
-        ))
+        navigation.map((item) => {
+          const current = isCurrent(item.href);
+          return (
+            <a
+              class:list={["site-nav__link", current && "is-current"]}
+              href={item.href}
+              aria-current={current ? "page" : undefined}
+            >
+              {current ? (
+                <span class="prompt-marker" aria-hidden="true">
+                  &gt;
+                </span>
+              ) : null}
+              <span>{item.label}</span>
+            </a>
+          );
+        })
       }
-      <a class="search-link" href="/search/" aria-label="Search records">
-        <svg
-          aria-hidden="true"
-          width="17"
-          height="17"
-          viewBox="0 0 24 24"
-          fill="none"
-        >
-          <path
-            d="m21 21-4.3-4.3m1.3-5.2a6.5 6.5 0 1 1-13 0 6.5 6.5 0 0 1 13 0Z"
-            stroke="currentColor"
-            stroke-width="2"
-            stroke-linecap="round"></path>
-        </svg>
-      </a>
     </nav>
+    <a class="search-link" href="/search/" aria-label="Search records">
+      <svg
+        aria-hidden="true"
+        width="17"
+        height="17"
+        viewBox="0 0 24 24"
+        fill="none"
+      >
+        <path
+          d="m21 21-4.3-4.3m1.3-5.2a6.5 6.5 0 1 1-13 0 6.5 6.5 0 0 1 13 0Z"
+          stroke="currentColor"
+          stroke-width="2"
+          stroke-linecap="round"></path>
+      </svg>
+    </a>
   </div>
 </header>
