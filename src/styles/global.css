@@ -528,30 +528,43 @@ mark {
   }
 
   .site-header__inner {
-    grid-template-columns: 1fr auto;
-    row-gap: var(--space-xs);
+    min-height: 56px;
+    grid-template-columns: max-content minmax(0, 1fr) 32px;
+    column-gap: var(--space-sm);
+    row-gap: 0;
   }
 
   .site-brand {
     grid-column: 1;
     grid-row: 1;
+    min-height: 40px;
+    font-size: 12px;
   }
 
   .site-nav {
-    grid-column: 1 / -1;
-    grid-row: 2;
-    justify-content: flex-start;
-    gap: var(--space-md);
+    grid-column: 2;
+    grid-row: 1;
+    min-width: 0;
+    justify-content: center;
+    gap: var(--space-sm);
   }
 
   .search-link {
-    grid-column: 2;
+    grid-column: 3;
     grid-row: 1;
+    width: 32px;
+    height: 40px;
   }
 
   .site-nav__link,
   .search-link {
-    min-height: 44px;
+    min-height: 40px;
+  }
+
+  .site-nav__link {
+    grid-template-columns: 8px max-content;
+    gap: var(--space-2xs);
+    font-size: 12px;
   }
 
   input,
