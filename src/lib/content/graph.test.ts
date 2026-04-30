@@ -234,7 +234,17 @@ describe("content graph", () => {
   it("projects Build entries into page-ready summary items", () => {
     const items = getBuildSummaryItems({ writing, projects });
 
-    expect(items[0].build.href).toBe("/build/project-one/");
+    expect(items[0].build).toEqual({
+      id: "project-one",
+      href: "/build/project-one/",
+      title: "Project One",
+      description: "Build thread",
+      status: "Building",
+      updatedAt: new Date("2026-04-29"),
+      tags: ["ai-engineering", "build-log"],
+      githubUrl: undefined,
+      demoUrl: undefined,
+    });
     expect(items[0].relatedRecords).toEqual([
       { href: "/records/published-new/", title: "Published New" },
     ]);
