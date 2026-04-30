@@ -13,19 +13,21 @@ import { deployment } from "../../deployment.config.mjs";
 describe("site identity", () => {
   it("keeps public identity copy in one authoring surface", () => {
     expect(homeHero.brand).toBe(site.name);
-    expect(aboutPage.title).toBe("About");
-    expect(aboutPage.context.rows.map((row) => row.label)).toEqual([
-      "Role",
-      "Public surface",
-      "Private boundary",
-    ]);
+    expect(aboutPage.title.trim().length).toBeGreaterThan(0);
+    expect(aboutPage.context.rows).toHaveLength(3);
+    for (const row of aboutPage.context.rows) {
+      expect(row.label.trim().length).toBeGreaterThan(0);
+      expect(row.value.trim().length).toBeGreaterThan(0);
+    }
     expect(aboutPage.workThemes.items.length).toBeGreaterThan(0);
-    expect(footerCopy.summary).toContain("public record");
-    expect(navigation.map((item) => item.label)).toEqual([
-      "Records",
-      "Build",
-      "About",
-    ]);
+    expect(footerCopy.summary.trim().length).toBeGreaterThan(0);
+    expect(navigation).toHaveLength(siteContent.navigation.length);
+    expect(navigation.map((item) => item.href)).toEqual(
+      siteContent.navigation.map((item) => item.href),
+    );
+    for (const item of navigation) {
+      expect(item.label.trim().length).toBeGreaterThan(0);
+    }
     expect(socialLinks).toEqual(site.links);
   });
 
@@ -35,9 +37,8 @@ describe("site identity", () => {
   });
 
   it("keeps editable UI text in the site content authoring surface", () => {
-    expect(siteContent.homeHero.promptThesis).toBe(
-      "public technical record, kept honest by status.",
-    );
+    expect(siteContent.homeHero).toBe(homeHero);
+    expect(siteContent.homeHero.promptThesis.trim().length).toBeGreaterThan(0);
     expect(siteContent.emptyStates.searchNoMatch.trim().length).toBeGreaterThan(
       0,
     );

@@ -4,11 +4,12 @@ import { site } from "./site";
 
 describe("homeHero", () => {
   it("keeps Home hero copy editable outside page layout files", () => {
-    expect(homeHero).toEqual({
-      brand: "Jay Baek.dev",
-      editorialClaim: ["Practical AI systems,", "edited into evidence."],
-      promptThesis: "public technical record, kept honest by status.",
-    });
+    expect(homeHero.brand).toBe(site.name);
+    expect(homeHero.editorialClaim).toHaveLength(2);
+    for (const line of homeHero.editorialClaim) {
+      expect(line.trim().length).toBeGreaterThan(0);
+    }
+    expect(homeHero.promptThesis.trim().length).toBeGreaterThan(0);
   });
 
   it("stores prompt thesis without the visual marker", () => {

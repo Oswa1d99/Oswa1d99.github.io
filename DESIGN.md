@@ -54,12 +54,11 @@ Home uses **Cover + Visible Proof Shelf**.
 
 ```text
 First viewport
-  Jay Baek.dev
+  Site brand
 
-  Practical AI systems,
-  edited into evidence.
+  Two-line editorial claim from homeHero
 
-  > public technical record, kept honest by status.
+  > Prompt thesis from homeHero
 
   Bottom of viewport
     Recent Records / Current Build headings begin to appear
@@ -103,16 +102,7 @@ Rules:
 
 Home hero copy must be editable without touching page layout files.
 
-Recommended implementation:
-
-```ts
-// src/config/home.ts
-export const homeHero = {
-  brand: "Jay Baek.dev",
-  editorialClaim: ["Practical AI systems,", "edited into evidence."],
-  promptThesis: "public technical record, kept honest by status.",
-} as const;
-```
+Source of truth: `src/config/site-content.json`, under `homeHero`.
 
 Rendering rules:
 
@@ -191,12 +181,12 @@ Avoid:
 Example:
 
 ```text
-Jay Baek.dev          > Records     Build     About             [search]
+Site brand            > Active      Nav item  Nav item          [search]
 
-Practical AI systems,
-edited into evidence.
+Editorial claim line 1
+Editorial claim line 2
 
-> public technical record, kept honest by status.
+> Prompt thesis
 ```
 
 ## Color
@@ -258,11 +248,11 @@ State copy should be short, concrete, and useful. Avoid apologies and avoid gene
 |---------|---------|-------|-------|---------|---------|
 | Home hero | Static render, no loader. | Show brand, claim, and prompt thesis. | Build should fail for invalid config. | Shows Cover + Visible Proof Shelf. | Not applicable. |
 | Home proof shelf | Static render, no loader. | Do not show empty proof panels. Use stable paths such as About or GitHub if no proof exists. | Invalid content references fail build. | Show available Recent Records and Current Build. | Show only the available proof section. Do not fill the missing side with placeholders. |
-| Records archive | Static render should show content immediately. Filter transitions may use subtle 150-250ms feedback. | `No records matched these filters. Clear one filter or browse all records.` | Invalid tags or content references fail validation. | Show result count, active filters, sort, and rows. | Small result counts are shown plainly. |
+| Records archive | Static render should show content immediately. Filter transitions may use subtle 150-250ms feedback. | Use the authored Records filter empty state from `src/config/site-content.json`. | Invalid tags or content references fail validation. | Show result count, active filters, sort, and rows. | Small result counts are shown plainly. |
 | Record detail | Static generated page renders directly. | Not applicable for generated records. | Missing content routes to a useful 404 with Records link. | Show metadata, tags, body, related Build links, and series links when present. | Missing optional related content is omitted without empty panels. |
-| Build | Static render should show content immediately. | `No public build thread is ready yet. Start with Records or GitHub.` | Invalid status or related Records fail build/schema checks. | Show status, problem, current state, what works now, unfinished work, and public links. | Missing public links do not hide technical status or related Records. |
-| Search | Search input loads immediately. | `No records matched this search. Try a broader term.` | `Search is unavailable. Browse Records instead.` Include a Records link. | Show title, tags, and matched snippet with `mark`. | If a match lacks body snippet, show description or first useful excerpt. |
-| Tags and series | Static render should show content immediately. | `No published records are in this view yet. Browse all records.` | Unknown linked tags fail validation; direct unknown routes recover gracefully. | Show matching Records with compact filter context. | Draft-only groups render empty state, not draft metadata. |
+| Build | Static render should show content immediately. | Use the authored Build empty state from `src/config/site-content.json`. | Invalid status or related Records fail build/schema checks. | Show status, problem, current state, what works now, unfinished work, and public links. | Missing public links do not hide technical status or related Records. |
+| Search | Search input loads immediately. | Use the authored search no-match copy from `src/config/site-content.json`. | Use the authored search unavailable copy from `src/config/site-content.json` and include a Records link. | Show title, tags, and matched snippet with `mark`. | If a match lacks body snippet, show description or first useful excerpt. |
+| Tags and series | Static render should show content immediately. | Use the authored tag or series empty state from `src/config/site-content.json`. | Unknown linked tags fail validation; direct unknown routes recover gracefully. | Show matching Records with compact filter context. | Draft-only groups render empty state, not draft metadata. |
 
 ## User Journey
 
