@@ -1,14 +1,20 @@
 import { deployment } from "../../deployment.config.mjs";
+import { getInternalPath } from "./deployment";
 import {
   aboutPage,
   footerCopy,
   homeHero,
-  navigation,
+  navigation as contentNavigation,
   siteIdentity,
   socialLinks,
 } from "./site-content";
 
-export { aboutPage, footerCopy, homeHero, navigation, socialLinks };
+export { aboutPage, footerCopy, homeHero, socialLinks };
+
+export const navigation = contentNavigation.map((item) => ({
+  ...item,
+  href: getInternalPath(item.href),
+}));
 
 export const site = {
   ...siteIdentity,

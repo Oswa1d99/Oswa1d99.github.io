@@ -1,5 +1,6 @@
 ---
 import TagList from "./TagList.astro";
+import { getInternalPath } from "../config/deployment";
 import { getPrimaryFormatTag } from "../config/tags";
 import type { WritingEntryLike } from "../lib/content/graph";
 
@@ -29,7 +30,9 @@ const Heading = headingLevel;
           {record.data.primaryLabel ? ` / ${record.data.primaryLabel}` : ""}
         </p>
         <Heading>
-          <a href={`/records/${record.id}/`}>{record.data.title}</a>
+          <a href={getInternalPath(`/records/${record.id}/`)}>
+            {record.data.title}
+          </a>
         </Heading>
         <p>{record.data.description}</p>
         {tagLimit === undefined || tagLimit > 0 ? (

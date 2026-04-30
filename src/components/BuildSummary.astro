@@ -1,5 +1,6 @@
 ---
 import TagList from "./TagList.astro";
+import { getInternalPath } from "../config/deployment";
 import type { ProjectEntryLike, WritingEntryLike } from "../lib/content/graph";
 
 interface Props {
@@ -16,7 +17,11 @@ const { build, relatedRecords = [] } = Astro.props;
       build.data.updatedAt.toISOString().slice(0, 10)
     }
   </p>
-  <h2><a href={`/build/${build.id}/`}>{build.data.title}</a></h2>
+  <h2>
+    <a href={getInternalPath(`/build/${build.id}/`)}>
+      {build.data.title}
+    </a>
+  </h2>
   <p>{build.data.description}</p>
   <TagList tags={build.data.tags} />
   <div>
@@ -34,7 +39,9 @@ const { build, relatedRecords = [] } = Astro.props;
         <ul>
           {relatedRecords.map((record) => (
             <li>
-              <a href={`/records/${record.id}/`}>{record.data.title}</a>
+              <a href={getInternalPath(`/records/${record.id}/`)}>
+                {record.data.title}
+              </a>
             </li>
           ))}
         </ul>

@@ -53,6 +53,7 @@ Use this only if the repository is not `oswa1d99.github.io`.
 
 - `deployment.config.mjs` is the single source for active `site`, `base`, repository name, and future custom-domain target.
 - `astro.config.mjs` and `src/config/site.ts` must consume deployment settings instead of duplicating URL strings.
+- Runtime code should call `getInternalPath`, `getPagefindAssetPath`, and `getCanonicalUrl` from `src/config/deployment.ts` instead of manually concatenating `base`, `site`, or root-relative paths.
 - The GitHub Actions workflow should build the site through the same scripts used locally.
 - Internal links and asset paths must work with the chosen `base`.
 - Custom domain changes must update this document, `astro.config.mjs`, `src/config/site.ts`, GitHub Pages settings, and the deployed smoke checklist together.

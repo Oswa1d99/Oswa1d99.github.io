@@ -1,5 +1,6 @@
 ---
 import { navigation } from "../config/navigation";
+import { getInternalPath } from "../config/deployment";
 import { site } from "../config/site";
 
 const currentPath = Astro.url.pathname;
@@ -11,7 +12,7 @@ function isCurrent(href: string) {
 
 <header class="site-header">
   <div class="page-frame site-header__inner">
-    <a class="site-brand" href="/">{site.name}</a>
+    <a class="site-brand" href={getInternalPath("/")}>{site.name}</a>
     <nav class="site-nav" aria-label="Primary navigation">
       {
         navigation.map((item) => {
@@ -33,7 +34,11 @@ function isCurrent(href: string) {
         })
       }
     </nav>
-    <a class="search-link" href="/search/" aria-label="Search records">
+    <a
+      class="search-link"
+      href={getInternalPath("/search/")}
+      aria-label="Search records"
+    >
       <svg
         aria-hidden="true"
         width="17"

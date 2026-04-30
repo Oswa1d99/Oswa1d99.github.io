@@ -1,4 +1,5 @@
 ---
+import { getInternalPath } from "../config/deployment";
 import BaseLayout from "../layouts/BaseLayout.astro";
 import { emptyStates } from "../config/site-content";
 ---
@@ -13,11 +14,11 @@ import { emptyStates } from "../config/site-content";
       {emptyStates.pageNotFound.message}
     </p>
     <p>
-      <a href={emptyStates.pageNotFound.recordsHref}>
+      <a href={getInternalPath(emptyStates.pageNotFound.recordsHref)}>
         {emptyStates.pageNotFound.recordsAction}
       </a>
       {" / "}
-      <a href={emptyStates.pageNotFound.homeHref}>
+      <a href={getInternalPath(emptyStates.pageNotFound.homeHref)}>
         {emptyStates.pageNotFound.homeAction}
       </a>
     </p>

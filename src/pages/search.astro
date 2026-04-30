@@ -1,6 +1,11 @@
 ---
+import { getInternalPath, getPagefindAssetPath } from "../config/deployment";
 import BaseLayout from "../layouts/BaseLayout.astro";
 import { emptyStates, searchPage } from "../config/site-content";
+
+const recordsPath = getInternalPath("/records/");
+const buildPath = getInternalPath("/build/");
+const pagefindAssetPath = getPagefindAssetPath();
 ---
 
 <BaseLayout title={searchPage.title} description={searchPage.description}>
@@ -27,11 +32,19 @@ import { emptyStates, searchPage } from "../config/site-content";
       data-search-start
     >
       <p class="meta">{searchPage.suggestedPathLabel}</p>
-      <a href="/records/">{searchPage.browseRecords}</a>
+      <a href={recordsPath}>{searchPage.browseRecords}</a>
     </nav>
     <div class="search-results" data-search-results></div>
   </section>
-  <script is:inline define:vars={{ searchPage, emptyStates }}>
+  <script
+    define:vars={{
+      searchPage,
+      emptyStates,
+      pagefindAssetPath,
+      recordsPath,
+      buildPath,
+    }}
+  >
     const input = document.querySelector("#record-search");
     const status = document.querySelector("[data-search-status]");
     const results = document.querySelector("[data-search-results]");
@@ -45,12 +58,12 @@ import { emptyStates, searchPage } from "../config/site-content";
         if (import.meta.env.DEV) {
           throw new Error("Pagefind is generated during production build.");
         }
-        const pagefindPath = "/pagefind/pagefind.js";
+        const pagefindPath = pagefindAssetPath;
         return await import(/* @vite-ignore */ pagefindPath);
       } catch {
         if (status) {
           const fallbackLink = document.createElement("a");
-          fallbackLink.setAttribute("href", "/records/");
+          fallbackLink.setAttribute("href", recordsPath);
           fallbackLink.textContent = searchPage.fallbackAction;
           status.replaceChildren(
             `${emptyStates.searchUnavailable} `,
@@ -71,11 +84,11 @@ import { emptyStates, searchPage } from "../config/site-content";
       try {
         const parsed = new URL(url, window.location.origin);
         const isRecordDetail =
-          parsed.pathname.startsWith("/records/") &&
-          parsed.pathname !== "/records/";
+          parsed.pathname.startsWith(recordsPath) &&
+          parsed.pathname !== recordsPath;
         const isBuildDetail =
-          parsed.pathname.startsWith("/build/") &&
-          parsed.pathname !== "/build/";
+          parsed.pathname.startsWith(buildPath) &&
+          parsed.pathname !== buildPath;
         if (
           parsed.origin === window.location.origin &&
           (isRecordDetail || isBuildDetail)
