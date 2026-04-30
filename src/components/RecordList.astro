@@ -1,11 +1,10 @@
 ---
 import TagList from "./TagList.astro";
 import { getInternalPath } from "../config/deployment";
-import { getPrimaryFormatTag } from "../config/tags";
-import type { WritingEntryLike } from "../lib/content/graph";
+import type { RecordListItem } from "../lib/content/graph";
 
 interface Props {
-  records: WritingEntryLike[];
+  records: RecordListItem[];
   headingLevel?: "h2" | "h3";
   tagLimit?: number;
 }
@@ -20,27 +19,25 @@ const Heading = headingLevel;
       <li
         class="record-card"
         data-record-card
-        data-tags={record.data.tags.join(" ")}
-        data-format={getPrimaryFormatTag(record.data.tags) ?? ""}
+        data-tags={record.tags.join(" ")}
+        data-format={record.formatTag ?? ""}
       >
         <p class="meta">
-          <time datetime={record.data.publishedAt.toISOString()}>
-            {record.data.publishedAt.toISOString().slice(0, 10)}
+          <time datetime={record.publishedAt.toISOString()}>
+            {record.publishedAt.toISOString().slice(0, 10)}
           </time>
-          {record.data.primaryLabel ? ` / ${record.data.primaryLabel}` : ""}
+          {record.primaryLabel ? ` / ${record.primaryLabel}` : ""}
         </p>
         <Heading>
-          <a href={getInternalPath(`/records/${record.id}/`)}>
-            {record.data.title}
-          </a>
+          <a href={getInternalPath(record.href)}>{record.title}</a>
         </Heading>
-        <p>{record.data.description}</p>
+        <p>{record.description}</p>
         {tagLimit === undefined || tagLimit > 0 ? (
           <TagList
             tags={
               tagLimit === undefined
-                ? record.data.tags
-                : record.data.tags.slice(0, tagLimit)
+                ? record.tags
+                : record.tags.slice(0, tagLimit)
             }
           />
         ) : null}

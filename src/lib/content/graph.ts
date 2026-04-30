@@ -1,5 +1,9 @@
 import type { CollectionEntry } from "astro:content";
-import { getTagLabel, hasKnownTag } from "../../config/tags";
+import {
+  getPrimaryFormatTag,
+  getTagLabel,
+  hasKnownTag,
+} from "../../config/tags";
 
 type ReferenceLike<Collection extends string = string> = {
   collection: Collection;
@@ -62,24 +66,52 @@ export type HomeSelection = {
   series: SeriesEntryLike[];
 };
 
-export type HomePageSelection = HomeSelection & {
-  relatedBuildRecords: WritingEntryLike[];
+export type RecordListItem = {
+  id: string;
+  href: string;
+  title: string;
+  description: string;
+  publishedAt: Date;
+  primaryLabel?: string;
+  tags: string[];
+  formatTag?: string;
 };
 
-export type BuildOverviewItem = {
-  build: ProjectEntryLike;
-  relatedRecords: WritingEntryLike[];
+export type RelatedRecordLink = {
+  href: string;
+  title: string;
+};
+
+export type BuildSummaryItem = {
+  build: {
+    id: string;
+    href: string;
+    title: string;
+    description: string;
+    status: ProjectEntryLike["data"]["status"];
+    updatedAt: Date;
+    tags: string[];
+    githubUrl?: string;
+    demoUrl?: string;
+  };
+  relatedRecords: RelatedRecordLink[];
+};
+
+export type HomePageSelection = {
+  records: RecordListItem[];
+  build?: BuildSummaryItem;
+  series: SeriesEntryLike[];
 };
 
 export type TagViewSelection = {
   tag: string;
   label: string;
-  records: WritingEntryLike[];
+  records: RecordListItem[];
 };
 
 export type SeriesViewSelection = {
   series?: SeriesEntryLike;
-  records: WritingEntryLike[];
+  records: RecordListItem[];
 };
 
 export type TagIndexItem = {
@@ -145,6 +177,55 @@ export function getBuildHref(entry: ProjectEntryLike) {
   return `/build/${entry.id}/`;
 }
 
+export function toRecordListItem(entry: WritingEntryLike): RecordListItem {
+  return {
+    id: entry.id,
+    href: getRecordHref(entry),
+    title: entry.data.title,
+    description: entry.data.description,
+    publishedAt: entry.data.publishedAt,
+    primaryLabel: entry.data.primaryLabel,
+    tags: entry.data.tags,
+    formatTag: getPrimaryFormatTag(entry.data.tags),
+  };
+}
+
+export function getRecordListItems(entries: WritingEntryLike[]) {
+  return prepareWritingEntries(entries).map(toRecordListItem);
+}
+
+export function toBuildSummaryItem(
+  build: ProjectEntryLike,
+  relatedRecords: WritingEntryLike[],
+): BuildSummaryItem {
+  return {
+    build: {
+      id: build.id,
+      href: getBuildHref(build),
+      title: build.data.title,
+      description: build.data.description,
+      status: build.data.status,
+      updatedAt: build.data.updatedAt,
+      tags: build.data.tags,
+      githubUrl: build.data.githubUrl,
+      demoUrl: build.data.demoUrl,
+    },
+    relatedRecords: relatedRecords.map((record) => ({
+      href: getRecordHref(record),
+      title: record.data.title,
+    })),
+  };
+}
+
+export function getBuildSummaryItems(input: {
+  writing: WritingEntryLike[];
+  projects: ProjectEntryLike[];
+}) {
+  return getProjectsForBuild(input.projects).map((build) =>
+    toBuildSummaryItem(build, getRelatedRecordsForBuild(input.writing, build)),
+  );
+}
+
 export function buildTagIndex(
   writing: WritingEntryLike[],
   projects: ProjectEntryLike[] = [],
@@ -205,21 +286,22 @@ export function getHomePageSelection(input: {
   const home = getHomeSelection(input);
 
   return {
-    ...home,
-    relatedBuildRecords: home.build
-      ? getRelatedRecordsForBuild(input.writing, home.build)
-      : [],
+    records: home.records.map(toRecordListItem),
+    build: home.build
+      ? toBuildSummaryItem(
+          home.build,
+          getRelatedRecordsForBuild(input.writing, home.build),
+        )
+      : undefined,
+    series: home.series,
   };
 }
 
 export function getBuildOverviewSelection(input: {
   writing: WritingEntryLike[];
   projects: ProjectEntryLike[];
-}): BuildOverviewItem[] {
-  return getProjectsForBuild(input.projects).map((build) => ({
-    build,
-    relatedRecords: getRelatedRecordsForBuild(input.writing, build),
-  }));
+}): BuildSummaryItem[] {
+  return getBuildSummaryItems(input);
 }
 
 export function getTagViewSelection(
@@ -229,7 +311,7 @@ export function getTagViewSelection(
   return {
     tag,
     label: getTagLabel(tag),
-    records: getRecordsForTag(input.writing, tag),
+    records: getRecordsForTag(input.writing, tag).map(toRecordListItem),
   };
 }
 
@@ -239,7 +321,7 @@ export function getSeriesViewSelection(
 ): SeriesViewSelection {
   return {
     series: input.series.find((entry) => entry.id === seriesId),
-    records: getRecordsForSeries(input.writing, seriesId),
+    records: getRecordsForSeries(input.writing, seriesId).map(toRecordListItem),
   };
 }
 
@@ -247,6 +329,12 @@ export async function getAllRecords() {
   const { getCollection } = await import("astro:content");
   const entries = await getCollection("writing");
   return prepareWritingEntries(entries as WritingEntryLike[]);
+}
+
+export async function getAllRecordListItems() {
+  const { getCollection } = await import("astro:content");
+  const entries = await getCollection("writing");
+  return getRecordListItems(entries as WritingEntryLike[]);
 }
 
 export async function getAllBuildEntries() {

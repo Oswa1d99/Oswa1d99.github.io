@@ -37,10 +37,7 @@ const hasProof = home.records.length > 0 || Boolean(home.build);
         {home.build ? (
           <section class="home-proof__section" aria-labelledby="current-build">
             <h2 id="current-build">Current Build</h2>
-            <BuildSummary
-              build={home.build}
-              relatedRecords={home.relatedBuildRecords}
-            />
+            <BuildSummary item={home.build} />
           </section>
         ) : null}
       </section>

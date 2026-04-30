@@ -24,6 +24,8 @@ The Content Graph Module owns content retrieval, sorting, filtering, tag indexes
 
 `src/lib/content/graph.ts` is the public Interface for pages. Page files should import content queries from `graph.ts`, not from internal Implementation files.
 
+The public Content Graph Interface should prefer page-ready projections over raw collection entries. Raw helpers may remain exported only when a route needs Astro-specific behavior such as `getStaticPaths`.
+
 Testing should exercise observable behavior through the public Interface with Content Fixtures.
 
 ### Content Rendering Module

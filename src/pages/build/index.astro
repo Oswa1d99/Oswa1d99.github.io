@@ -17,12 +17,7 @@ const builds = await getBuildOverviewContent();
     </p>
     {
       builds.length > 0 ? (
-        builds.map((item) => (
-          <BuildSummary
-            build={item.build}
-            relatedRecords={item.relatedRecords}
-          />
-        ))
+        builds.map((item) => <BuildSummary item={item} />)
       ) : (
         <EmptyState
           title={emptyStates.buildNoPublicThread.title}

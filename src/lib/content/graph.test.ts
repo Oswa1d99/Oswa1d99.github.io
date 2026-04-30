@@ -3,12 +3,14 @@ import {
   buildTagIndex,
   getFeaturedWriting,
   getBuildHref,
+  getBuildSummaryItems,
   getBuildOverviewSelection,
   getHomeSelection,
   getHomePageSelection,
   getProjectsForBuild,
   getPublicRecordEntry,
   getRecordHref,
+  getRecordListItems,
   getRecordsForSeries,
   getRecordsForTag,
   getRelatedRecordsForBuild,
@@ -208,9 +210,33 @@ describe("content graph", () => {
       "published-old",
       "published-featured-oldest",
     ]);
-    expect(home.build?.id).toBe("project-one");
-    expect(home.relatedBuildRecords.map((entry) => entry.id)).toEqual([
-      "published-new",
+    expect(home.build?.build.id).toBe("project-one");
+    expect(home.build?.relatedRecords).toEqual([
+      { href: "/records/published-new/", title: "Published New" },
+    ]);
+  });
+
+  it("projects Records into page-ready list items", () => {
+    const items = getRecordListItems(writing);
+
+    expect(items[0]).toEqual({
+      id: "published-new",
+      href: "/records/published-new/",
+      title: "Published New",
+      description: "New public record",
+      publishedAt: new Date("2026-04-29"),
+      primaryLabel: "LLM serving",
+      tags: ["llm-serving", "latency", "study-note"],
+      formatTag: "study-note",
+    });
+  });
+
+  it("projects Build entries into page-ready summary items", () => {
+    const items = getBuildSummaryItems({ writing, projects });
+
+    expect(items[0].build.href).toBe("/build/project-one/");
+    expect(items[0].relatedRecords).toEqual([
+      { href: "/records/published-new/", title: "Published New" },
     ]);
   });
 
@@ -220,10 +246,10 @@ describe("content graph", () => {
     expect(
       overview.map((item) => ({
         build: item.build.id,
-        relatedRecords: item.relatedRecords.map((record) => record.id),
+        relatedRecords: item.relatedRecords.map((record) => record.href),
       })),
     ).toEqual([
-      { build: "project-one", relatedRecords: ["published-new"] },
+      { build: "project-one", relatedRecords: ["/records/published-new/"] },
       { build: "project-old", relatedRecords: [] },
     ]);
   });
@@ -232,12 +258,44 @@ describe("content graph", () => {
     expect(getTagViewSelection({ writing }, "queues")).toEqual({
       tag: "queues",
       label: "Queues",
-      records: [writing[1]],
+      records: [
+        {
+          id: "published-old",
+          href: "/records/published-old/",
+          title: "Published Old",
+          description: "Old public record",
+          publishedAt: new Date("2026-04-28"),
+          primaryLabel: undefined,
+          tags: ["system-design", "queues", "engineering-memo"],
+          formatTag: "engineering-memo",
+        },
+      ],
     });
 
     expect(getSeriesViewSelection({ writing, series }, "series-one")).toEqual({
       series: series[0],
-      records: [writing[1], writing[0]],
+      records: [
+        {
+          id: "published-old",
+          href: "/records/published-old/",
+          title: "Published Old",
+          description: "Old public record",
+          publishedAt: new Date("2026-04-28"),
+          primaryLabel: undefined,
+          tags: ["system-design", "queues", "engineering-memo"],
+          formatTag: "engineering-memo",
+        },
+        {
+          id: "published-new",
+          href: "/records/published-new/",
+          title: "Published New",
+          description: "New public record",
+          publishedAt: new Date("2026-04-29"),
+          primaryLabel: "LLM serving",
+          tags: ["llm-serving", "latency", "study-note"],
+          formatTag: "study-note",
+        },
+      ],
     });
   });
 
