@@ -194,4 +194,52 @@ describe("content graph", () => {
     ]);
     expect(home.build?.id).toBe("project-one");
   });
+
+  it("limits Home records to three recent public entries", () => {
+    const extraWriting: WritingEntryLike[] = [
+      ...writing,
+      {
+        id: "published-fourth",
+        collection: "writing",
+        data: {
+          title: "Published Fourth",
+          description: "Fourth public record",
+          publishedAt: new Date("2026-04-26"),
+          draft: false,
+          tags: ["reflection"],
+          relatedProjects: [],
+          language: "mixed",
+          featured: false,
+        },
+      },
+    ];
+
+    const home = getHomeSelection({
+      writing: extraWriting,
+      projects,
+      series,
+    });
+
+    expect(home.records.map((entry) => entry.id)).toEqual([
+      "published-new",
+      "published-old",
+      "published-featured-oldest",
+    ]);
+  });
+
+  it("supports Home proof shelf partial and empty content", () => {
+    expect(
+      getHomeSelection({ writing, projects: [], series }).build,
+    ).toBeUndefined();
+
+    const emptyHome = getHomeSelection({
+      writing: [],
+      projects: [],
+      series: [],
+    });
+
+    expect(emptyHome.records).toEqual([]);
+    expect(emptyHome.build).toBeUndefined();
+    expect(emptyHome.series).toEqual([]);
+  });
 });

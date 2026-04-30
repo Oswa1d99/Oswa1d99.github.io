@@ -155,7 +155,7 @@ export function getHomeSelection(input: {
   series: SeriesEntryLike[];
 }): HomeSelection {
   return {
-    records: prepareWritingEntries(input.writing).slice(0, 4),
+    records: prepareWritingEntries(input.writing).slice(0, 3),
     build:
       getProjectsForBuild(input.projects).find(
         (entry) => entry.data.featured,
