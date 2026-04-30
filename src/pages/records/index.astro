@@ -1,8 +1,6 @@
 ---
 import BaseLayout from "../../layouts/BaseLayout.astro";
-import RecordFilters from "../../components/RecordFilters.astro";
-import RecordList from "../../components/RecordList.astro";
-import EmptyState from "../../components/EmptyState.astro";
+import RecordsView from "../../components/RecordsView.astro";
 import { emptyStates } from "../../config/site-content";
 import { getAllRecordListItems } from "../../lib/content/graph";
 import { sortRecordItems } from "../../lib/content/records-discovery";
@@ -14,23 +12,11 @@ const records = sortRecordItems(await getAllRecordListItems(), "newest");
   title="Records"
   description="Writing, study notes, engineering memos, project logs, and reflections."
 >
-  <section class="records-frame">
-    <h1>Records</h1>
-    <p>
-      Writing, study notes, engineering memos, project logs, and reflections.
-    </p>
-    <RecordFilters />
-    {
-      records.length > 0 ? (
-        <RecordList records={records} />
-      ) : (
-        <EmptyState
-          title={emptyStates.recordsNoPublished.title}
-          message={emptyStates.recordsNoPublished.message}
-          href={emptyStates.recordsNoPublished.href}
-          action={emptyStates.recordsNoPublished.action}
-        />
-      )
-    }
-  </section>
+  <RecordsView
+    title="Records"
+    description="Writing, study notes, engineering memos, project logs, and reflections."
+    records={records}
+    emptyState={emptyStates.recordsNoPublished}
+    filters
+  />
 </BaseLayout>

@@ -1,7 +1,6 @@
 ---
 import BaseLayout from "../../layouts/BaseLayout.astro";
-import RecordList from "../../components/RecordList.astro";
-import EmptyState from "../../components/EmptyState.astro";
+import RecordsView from "../../components/RecordsView.astro";
 import { emptyStates } from "../../config/site-content";
 import { tagSlugs } from "../../config/tags";
 import { getTagPageContent } from "../../lib/content/graph";
@@ -18,19 +17,9 @@ const tagView = await getTagPageContent(tag);
   title={tagView.label}
   description={`Records tagged ${tagView.label}.`}
 >
-  <section class="records-frame">
-    <h1>{tagView.label}</h1>
-    {
-      tagView.records.length > 0 ? (
-        <RecordList records={tagView.records} />
-      ) : (
-        <EmptyState
-          title={emptyStates.tagNoRecords.title}
-          message={emptyStates.tagNoRecords.message}
-          href={emptyStates.tagNoRecords.href}
-          action={emptyStates.tagNoRecords.action}
-        />
-      )
-    }
-  </section>
+  <RecordsView
+    title={tagView.label}
+    records={tagView.records}
+    emptyState={emptyStates.tagNoRecords}
+  />
 </BaseLayout>

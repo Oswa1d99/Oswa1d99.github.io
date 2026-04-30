@@ -1,0 +1,41 @@
+---
+import EmptyState from "./EmptyState.astro";
+import RecordFilters from "./RecordFilters.astro";
+import RecordList from "./RecordList.astro";
+import type { EmptyStateCopy } from "../config/site-content";
+import type { RecordListItem } from "../lib/content/graph";
+
+interface Props {
+  title: string;
+  description?: string;
+  records: RecordListItem[];
+  emptyState: EmptyStateCopy;
+  filters?: boolean;
+}
+
+const {
+  title,
+  description,
+  records,
+  emptyState,
+  filters = false,
+} = Astro.props;
+---
+
+<section class="records-frame">
+  <h1>{title}</h1>
+  {description ? <p>{description}</p> : null}
+  {filters ? <RecordFilters /> : null}
+  {
+    records.length > 0 ? (
+      <RecordList records={records} />
+    ) : (
+      <EmptyState
+        title={emptyState.title}
+        message={emptyState.message}
+        href={emptyState.href}
+        action={emptyState.action}
+      />
+    )
+  }
+</section>
