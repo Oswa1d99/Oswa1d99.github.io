@@ -1,4 +1,6 @@
 ---
+import { getDeployableHref } from "../config/deployment";
+
 interface Props {
   title: string;
   message: string;
@@ -7,6 +9,7 @@ interface Props {
 }
 
 const { title, message, href, action } = Astro.props;
+const deployableHref = href ? getDeployableHref(href) : undefined;
 ---
 
 <section class="empty-state" aria-label={title}>
@@ -15,7 +18,7 @@ const { title, message, href, action } = Astro.props;
   {
     href && action ? (
       <p>
-        <a href={href}>{action}</a>
+        <a href={deployableHref}>{action}</a>
       </p>
     ) : null
   }

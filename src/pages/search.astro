@@ -37,6 +37,7 @@ const pagefindAssetPath = getPagefindAssetPath();
     <div class="search-results" data-search-results></div>
   </section>
   <script
+    is:inline
     define:vars={{
       searchPage,
       emptyStates,
@@ -83,17 +84,26 @@ const pagefindAssetPath = getPagefindAssetPath();
     function getSearchableContentUrl(url) {
       try {
         const parsed = new URL(url, window.location.origin);
-        const isRecordDetail =
-          parsed.pathname.startsWith(recordsPath) &&
-          parsed.pathname !== recordsPath;
-        const isBuildDetail =
-          parsed.pathname.startsWith(buildPath) &&
-          parsed.pathname !== buildPath;
-        if (
-          parsed.origin === window.location.origin &&
-          (isRecordDetail || isBuildDetail)
-        ) {
-          return `${parsed.pathname}${parsed.search}${parsed.hash}`;
+        if (parsed.origin !== window.location.origin) return null;
+
+        const searchableSections = [
+          { sourcePath: "/records/", deployedPath: recordsPath },
+          { sourcePath: "/build/", deployedPath: buildPath },
+        ];
+        for (const { sourcePath, deployedPath } of searchableSections) {
+          if (
+            parsed.pathname.startsWith(deployedPath) &&
+            parsed.pathname !== deployedPath
+          ) {
+            return `${parsed.pathname}${parsed.search}${parsed.hash}`;
+          }
+
+          if (
+            parsed.pathname.startsWith(sourcePath) &&
+            parsed.pathname !== sourcePath
+          ) {
+            return `${deployedPath}${parsed.pathname.slice(sourcePath.length)}${parsed.search}${parsed.hash}`;
+          }
         }
       } catch {
         return null;
