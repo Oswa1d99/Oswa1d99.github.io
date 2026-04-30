@@ -1,17 +1,17 @@
 ---
 import { getInternalPath, getPagefindAssetPath } from "../config/deployment";
+import { deployment } from "../../deployment.config.mjs";
 import BaseLayout from "../layouts/BaseLayout.astro";
 import { emptyStates, searchPage } from "../config/site-content";
 
 const recordsPath = getInternalPath("/records/");
-const buildPath = getInternalPath("/build/");
 const pagefindAssetPath = getPagefindAssetPath();
 const searchConfig = JSON.stringify({
   searchPage,
   emptyStates,
   pagefindAssetPath,
   recordsPath,
-  buildPath,
+  searchBase: deployment.base,
 }).replaceAll("<", "\\u003c");
 ---
 
@@ -75,7 +75,7 @@ const searchConfig = JSON.stringify({
       emptyStates: EmptyStateCopy;
       pagefindAssetPath: string;
       recordsPath: string;
-      buildPath: string;
+      searchBase?: string;
     };
 
     type PagefindData = {
@@ -100,7 +100,7 @@ const searchConfig = JSON.stringify({
       emptyStates,
       pagefindAssetPath,
       recordsPath,
-      buildPath,
+      searchBase,
     } = config;
     const input = document.querySelector("#record-search");
     const status = document.querySelector("[data-search-status]");
@@ -140,36 +140,11 @@ const searchConfig = JSON.stringify({
     }
 
     function getSearchableContentUrl(url: string) {
-      try {
-        const parsed = new URL(url, window.location.origin);
-        const sourceUrl = getSourceSearchableContentUrl(
-          parsed.href,
-          window.location.origin,
-        );
-        if (sourceUrl?.startsWith("/records/")) {
-          return `${recordsPath}${sourceUrl.slice("/records/".length)}`;
-        }
-        if (sourceUrl?.startsWith("/build/")) {
-          return `${buildPath}${sourceUrl.slice("/build/".length)}`;
-        }
-        if (parsed.origin !== window.location.origin) return null;
-
-        const searchableSections = [
-          { deployedPath: recordsPath },
-          { deployedPath: buildPath },
-        ];
-        for (const { deployedPath } of searchableSections) {
-          if (
-            parsed.pathname.startsWith(deployedPath) &&
-            parsed.pathname !== deployedPath
-          ) {
-            return `${parsed.pathname}${parsed.search}${parsed.hash}`;
-          }
-        }
-      } catch {
-        return null;
-      }
-      return null;
+      return getSourceSearchableContentUrl(
+        url,
+        window.location.origin,
+        searchBase,
+      );
     }
 
     function appendSafeExcerpt(target: Element, excerpt: string) {

@@ -1,13 +1,43 @@
-export function getSearchableContentUrl(url: string, origin: string) {
+function normalizeBase(base: string | undefined) {
+  if (!base || base === "/") return "";
+  return base.startsWith("/") ? base.replace(/\/$/, "") : `/${base}`;
+}
+
+function removeBase(pathname: string, base: string | undefined) {
+  const normalizedBase = normalizeBase(base);
+  if (!normalizedBase) return pathname;
+  if (pathname === normalizedBase) return "/";
+  if (pathname.startsWith(`${normalizedBase}/`)) {
+    return pathname.slice(normalizedBase.length);
+  }
+  return pathname;
+}
+
+function applyBase(pathname: string, base: string | undefined) {
+  const normalizedBase = normalizeBase(base);
+  if (!normalizedBase) return pathname;
+  if (pathname === "/") return `${normalizedBase}/`;
+  if (pathname.startsWith(`${normalizedBase}/`)) return pathname;
+  return `${normalizedBase}${pathname}`;
+}
+
+export function getSearchableContentUrl(
+  url: string,
+  origin: string,
+  base?: string,
+) {
   try {
-    const parsed = new URL(url, origin);
+    const normalizedOrigin = new URL(origin).origin;
+    const parsed = new URL(url, normalizedOrigin);
+    if (parsed.origin !== normalizedOrigin) return null;
+
+    const sourcePath = removeBase(parsed.pathname, base);
     const isRecordDetail =
-      parsed.pathname.startsWith("/records/") &&
-      parsed.pathname !== "/records/";
+      sourcePath.startsWith("/records/") && sourcePath !== "/records/";
     const isBuildDetail =
-      parsed.pathname.startsWith("/build/") && parsed.pathname !== "/build/";
-    if (parsed.origin === origin && (isRecordDetail || isBuildDetail)) {
-      return `${parsed.pathname}${parsed.search}${parsed.hash}`;
+      sourcePath.startsWith("/build/") && sourcePath !== "/build/";
+    if (isRecordDetail || isBuildDetail) {
+      return `${applyBase(sourcePath, base)}${parsed.search}${parsed.hash}`;
     }
   } catch {
     return null;
