@@ -33,7 +33,9 @@ const lang = Astro.props.lang ?? "en";
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <meta name="description" content={description} />
     <link rel="canonical" href={getCanonicalUrl(Astro.url.pathname)} />
-    <link rel="icon" type="image/png" href={getInternalPath("/favicon.png")} />
+    <link rel="icon" type="image/png" sizes="512x512" href={getInternalPath("/favicon.png?v=2")} />
+    <link rel="shortcut icon" href={getInternalPath("/favicon.ico?v=2")} />
+    <link rel="apple-touch-icon" sizes="180x180" href={getInternalPath("/apple-touch-icon.png?v=2")} />
     <title>{pageTitle}</title>
   </head>
   <body>
